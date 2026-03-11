@@ -245,6 +245,68 @@
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .form-grid .full { grid-column: 1 / -1; }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+  /* ── AUTOCOMPLETE ── */
+  .autocomplete-wrap { position: relative; }
+  .autocomplete-list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: var(--warm-white);
+    border: 1px solid var(--teal);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 1000;
+    max-height: 260px;
+    overflow-y: auto;
+  }
+  .autocomplete-item {
+    padding: 0.6rem 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  .autocomplete-item:last-child { border-bottom: none; }
+  .autocomplete-item:hover, .autocomplete-item.active { background: var(--teal-pale); }
+  .autocomplete-item-name { font-size: 0.9rem; font-weight: 500; flex: 1; }
+  .autocomplete-item-cat { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
+  .autocomplete-item-cat .badge { font-size: 0.68rem; padding: 0.15rem 0.5rem; }
+
+  /* Bijsluiter link in form */
+  .bijsluiter-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    color: var(--teal);
+    text-decoration: none;
+    margin-top: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  .bijsluiter-link.visible { opacity: 1; pointer-events: all; }
+  .bijsluiter-link:hover { text-decoration: underline; }
+
+  /* Bijsluiter in tabel */
+  .bijsluiter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.72rem;
+    color: var(--teal);
+    text-decoration: none;
+    background: var(--teal-pale);
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-top: 3px;
+    transition: background 0.15s;
+  }
+  .bijsluiter-btn:hover { background: var(--teal); color: #fff; }
   label { font-size: 0.78rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); }
   input, select, textarea { padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; background: var(--cream); color: var(--text); transition: border-color 0.2s, box-shadow 0.2s; }
   input:focus, select:focus, textarea:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26,107,107,0.12); }
@@ -462,7 +524,14 @@
       <button class="btn-close" onclick="closeModal('formModal')">✕</button>
     </div>
     <div class="form-grid">
-      <div class="form-group full"><label>Naam *</label><input type="text" id="fNaam" placeholder="Bijv. Paracetamol 500mg"></div>
+      <div class="form-group full">
+        <label>Naam *</label>
+        <div class="autocomplete-wrap">
+          <input type="text" id="fNaam" placeholder="Begin te typen, bijv. Paracetamol…" autocomplete="off" oninput="onNaamInput()" onkeydown="onNaamKeydown(event)">
+          <div class="autocomplete-list" id="autocompleteList" style="display:none"></div>
+        </div>
+        <a class="bijsluiter-link" id="bijsluiterFormLink" href="#" target="_blank" rel="noopener">📄 Bekijk bijsluiter (bcfi.be)</a>
+      </div>
       <div class="form-group"><label>Categorie *</label>
         <select id="fCat">
           <option value="pijnstiller">💊 Pijnstiller</option>
@@ -495,6 +564,7 @@
       </div>
       <div class="form-group"><label>Locatie</label><input type="text" id="fLocatie" placeholder="Badkamerkast, EHBO-koffer…"></div>
       <div class="form-group full"><label>Notities</label><textarea id="fNotities" placeholder="Dosering, bijzonderheden…"></textarea></div>
+      <input type="hidden" id="fBijsluiter">
     </div>
     <div class="form-actions">
       <button class="btn-cancel" onclick="closeModal('formModal')">Annuleren</button>
@@ -722,6 +792,7 @@ function cardHtml_m(m) {
       <span style="font-size:0.8rem;color:var(--text-muted)">📅 ${formatDate(m.vervaldatum)}</span>
       ${qty?`<span class="qty">${esc(qty)}</span>`:''}
       ${m.locatie?`<span class="location-tag">📍 ${esc(m.locatie)}</span>`:''}
+      ${m.bijsluiter_url?`<a class="bijsluiter-btn" href="${esc(m.bijsluiter_url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📄 bijsluiter</a>`:''}
     </div>
   </div>`;
 }
@@ -731,7 +802,7 @@ function rowHtml(m) {
   const rowClass = status==='expired'?'expired-row':status==='soon'?'soon-row':'';
   const qty = m.hoeveelheid ? `${m.hoeveelheid}${m.eenheid?' '+m.eenheid:''}` : '-';
   return `<tr class="${rowClass} clickable" onclick="openEdit(${m.id})" title="Klik om te bewerken">
-    <td><div class="med-name">${esc(m.naam)}</div>${m.notities?`<div class="med-notes">${esc(m.notities)}</div>`:''}</td>
+    <td><div class="med-name">${esc(m.naam)}</div>${m.notities?`<div class="med-notes">${esc(m.notities)}</div>`:''} ${m.bijsluiter_url?`<a class="bijsluiter-btn" href="${esc(m.bijsluiter_url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📄 bijsluiter</a>`:''}</td>
     <td><span class="badge badge-cat">${catEmoji[m.categorie]||'📦'} ${esc(m.categorie)}</span></td>
     <td><span class="qty">${esc(qty)}</span></td>
     <td>${m.locatie?`<span class="location-tag">📍 ${esc(m.locatie)}</span>`:'-'}</td>
@@ -761,9 +832,11 @@ function handleBackdropClick(e, id) { if (e.target===document.getElementById(id)
 function openAdd() {
   editId = null;
   document.getElementById('formTitle').textContent = 'Medicijn toevoegen';
-  ['fNaam','fVerval','fHoeveelheid','fLocatie','fNotities'].forEach(id => document.getElementById(id).value='');
+  ['fNaam','fVerval','fHoeveelheid','fLocatie','fNotities','fBijsluiter'].forEach(id => document.getElementById(id).value='');
   document.getElementById('fCat').value = 'pijnstiller';
   document.getElementById('fEenheid').value = '';
+  setBijsluiterLink(null);
+  hideAc();
   openModal('formModal');
   setTimeout(()=>document.getElementById('fNaam').focus(),300);
 }
@@ -782,6 +855,9 @@ async function openEdit(id) {
     document.getElementById('fEenheid').value    = m.eenheid||'';
     document.getElementById('fLocatie').value    = m.locatie||'';
     document.getElementById('fNotities').value   = m.notities||'';
+    document.getElementById('fBijsluiter').value = m.bijsluiter_url||'';
+    setBijsluiterLink(m.bijsluiter_url||null);
+    hideAc();
     openModal('formModal');
   } catch(e) { showToast('Fout bij laden','error'); }
 }
@@ -797,6 +873,7 @@ async function saveMedicijn() {
     eenheid: document.getElementById('fEenheid').value,
     locatie: document.getElementById('fLocatie').value.trim(),
     notities: document.getElementById('fNotities').value.trim(),
+    bijsluiter_url: document.getElementById('fBijsluiter').value.trim() || null,
   };
   try {
     const res = await fetch(editId?`${API}/medicijnen/${editId}`:`${API}/medicijnen`, {
@@ -838,6 +915,103 @@ function showToast(msg, type='') {
   t.textContent = msg; t.className=`toast ${type} show`;
   setTimeout(()=>t.classList.remove('show'),3000);
 }
+
+// ── AUTOCOMPLETE ──────────────────────────────────────────────────
+let acTimer = null;
+let acIndex = -1;
+let acResults = [];
+let acSelectedFromList = false;
+
+async function onNaamInput() {
+  const val = document.getElementById('fNaam').value.trim();
+  acSelectedFromList = false;
+  // Reset bijsluiter link if user is typing freely
+  setBijsluiterLink(null);
+
+  clearTimeout(acTimer);
+  if (val.length < 2) { hideAc(); return; }
+  acTimer = setTimeout(async () => {
+    try {
+      const res = await fetch(`${API}/zoek-geneesmiddel?q=${encodeURIComponent(val)}`);
+      acResults = await res.json();
+      showAc(acResults);
+    } catch(e) { hideAc(); }
+  }, 200);
+}
+
+function onNaamKeydown(e) {
+  const list = document.getElementById('autocompleteList');
+  if (list.style.display === 'none') return;
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    acIndex = Math.min(acIndex + 1, acResults.length - 1);
+    renderAcHighlight();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    acIndex = Math.max(acIndex - 1, -1);
+    renderAcHighlight();
+  } else if (e.key === 'Enter' && acIndex >= 0) {
+    e.preventDefault();
+    selectAc(acResults[acIndex]);
+  } else if (e.key === 'Escape') {
+    hideAc();
+  }
+}
+
+function showAc(results) {
+  const list = document.getElementById('autocompleteList');
+  if (!results.length) { hideAc(); return; }
+  acIndex = -1;
+  list.innerHTML = results.map((r, i) => `
+    <div class="autocomplete-item" data-i="${i}" onmousedown="selectAc(acResults[${i}])">
+      <span class="autocomplete-item-name">${esc(r.naam)}</span>
+      <span class="autocomplete-item-cat"><span class="badge badge-cat">${catEmoji[r.categorie]||'📦'} ${esc(r.categorie)}</span></span>
+    </div>
+  `).join('');
+  list.style.display = 'block';
+}
+
+function renderAcHighlight() {
+  const items = document.querySelectorAll('.autocomplete-item');
+  items.forEach((el, i) => el.classList.toggle('active', i === acIndex));
+}
+
+function hideAc() {
+  document.getElementById('autocompleteList').style.display = 'none';
+  acIndex = -1;
+}
+
+function selectAc(item) {
+  acSelectedFromList = true;
+  document.getElementById('fNaam').value = item.naam;
+  document.getElementById('fCat').value = item.categorie;
+  if (item.bijsluiter_url) {
+    document.getElementById('fBijsluiter').value = item.bijsluiter_url;
+    setBijsluiterLink(item.bijsluiter_url);
+  } else {
+    document.getElementById('fBijsluiter').value = '';
+    setBijsluiterLink(null);
+  }
+  hideAc();
+  // Focus next field
+  document.getElementById('fVerval').focus();
+}
+
+function setBijsluiterLink(url) {
+  const link = document.getElementById('bijsluiterFormLink');
+  if (url) {
+    link.href = url;
+    link.classList.add('visible');
+  } else {
+    link.href = '#';
+    link.classList.remove('visible');
+  }
+}
+
+// Close autocomplete when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.autocomplete-wrap')) hideAc();
+});
 
 // Start
 checkAuth();
