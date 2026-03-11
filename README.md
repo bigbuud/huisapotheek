@@ -4,7 +4,7 @@ Inventarisatie van je huisapotheek — met vervaldatums, categorieën en statusw
 
 ---
 via docker-compose: 
-
+```bash
 version: '3.8'
 
 services:
@@ -22,7 +22,7 @@ services:
     volumes:
       - /volume1/docker/huisapotheek:/data
     restart: always
-
+```
 
 ## 🐳 Synology — User-defined Script
 
