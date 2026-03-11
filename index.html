@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Huisapotheek</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --warm-white: #FDFAF5;
+    --teal: #1A6B6B;
+    --teal-light: #2A8A8A;
+    --teal-pale: #E0F0F0;
+    --amber: #C87941;
+    --amber-pale: #FDF0E0;
+    --red: #B84040;
+    --red-pale: #FCE8E8;
+    --green: #2E7D52;
+    --green-pale: #E6F4EC;
+    --text: #1C2830;
+    --text-muted: #6B7A84;
+    --border: #DDD8CE;
+    --shadow: 0 2px 16px rgba(28,40,48,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--teal);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.15);
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  header h1 span {
+    font-weight: 300;
+    opacity: 0.8;
+  }
+
+  .btn-add {
+    background: #fff;
+    color: var(--teal);
+    border: none;
+    padding: 0.55rem 1.2rem;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    transition: all 0.2s;
+  }
+
+  .btn-add:hover { background: var(--cream); transform: translateY(-1px); }
+
+  /* ── STAT CARDS ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .stat-card {
+    background: var(--warm-white);
+    border-radius: 12px;
+    padding: 1.1rem 1.3rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 12px;
+    transition: transform 0.2s;
+    cursor: default;
+  }
+
+  .stat-card:hover { transform: translateY(-2px); }
+
+  .stat-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+
+  .stat-icon.total { background: var(--teal-pale); }
+  .stat-icon.ok { background: var(--green-pale); }
+  .stat-icon.soon { background: var(--amber-pale); }
+  .stat-icon.expired { background: var(--red-pale); }
+
+  .stat-info { flex: 1; }
+  .stat-number { font-size: 1.8rem; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-number.total { color: var(--teal); }
+  .stat-number.ok { color: var(--green); }
+  .stat-number.soon { color: var(--amber); }
+  .stat-number.expired { color: var(--red); }
+
+  /* ── MAIN AREA ── */
+  .main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem 2rem;
+  }
+
+  /* ── FILTER BAR ── */
+  .filter-bar {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .search-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); font-size: 14px; pointer-events: none;
+  }
+
+  .filter-bar input[type="text"] {
+    width: 100%;
+    padding: 0.55rem 0.75rem 0.55rem 2.2rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    background: var(--cream);
+    color: var(--text);
+    transition: border-color 0.2s;
+  }
+
+  .filter-bar input[type="text"]:focus { outline: none; border-color: var(--teal); }
+
+  .filter-bar select {
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    background: var(--cream);
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .filter-bar select:focus { outline: none; border-color: var(--teal); }
+
+  .filter-divider { width: 1px; height: 28px; background: var(--border); }
+
+  .btn-expired-filter {
+    padding: 0.5rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .btn-expired-filter.active {
+    background: var(--red-pale);
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--warm-white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    background: var(--teal);
+    color: rgba(255,255,255,0.9);
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    white-space: nowrap;
+  }
+
+  thead th:first-child { padding-left: 1.5rem; }
+  thead th:last-child { text-align: center; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+
+  tbody tr:hover { background: var(--cream); }
+
+  tbody tr.expired-row { background: #FFF5F5; }
+  tbody tr.expired-row:hover { background: #FFE8E8; }
+  tbody tr.soon-row { background: #FFFBF0; }
+  tbody tr.soon-row:hover { background: #FFF3D6; }
+
+  tbody td {
+    padding: 0.9rem 1rem;
+    font-size: 0.88rem;
+    vertical-align: middle;
+  }
+
+  tbody td:first-child { padding-left: 1.5rem; }
+
+  .med-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+
+  .med-notes {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0.25rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .badge-cat { background: var(--teal-pale); color: var(--teal); }
+  .badge-expired { background: var(--red-pale); color: var(--red); }
+  .badge-soon { background: var(--amber-pale); color: var(--amber); }
+  .badge-ok { background: var(--green-pale); color: var(--green); }
+
+  .expiry-date { font-size: 0.85rem; }
+
+  /* ── ACTION BUTTONS ── */
+  .action-btns { display: flex; gap: 6px; justify-content: center; }
+
+  .btn-icon {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+
+  .btn-icon:hover { transform: scale(1.1); }
+  .btn-icon.edit:hover { background: var(--teal-pale); border-color: var(--teal); }
+  .btn-icon.delete:hover { background: var(--red-pale); border-color: var(--red); }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--text-muted);
+  }
+
+  .empty-state .emoji { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-state h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--text); }
+  .empty-state p { font-size: 0.9rem; }
+
+  /* ── CATEGORY SECTION HEADERS ── */
+  .cat-header-row td {
+    background: var(--cream);
+    color: var(--teal);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.5rem 1rem 0.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── MODAL ── */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(28,40,48,0.5);
+    backdrop-filter: blur(3px);
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+  }
+
+  .modal-backdrop.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--warm-white);
+    border-radius: 18px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.25s;
+  }
+
+  .modal-backdrop.open .modal { transform: translateY(0) scale(1); }
+
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--teal);
+  }
+
+  .btn-close {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid var(--border);
+    background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+
+  .btn-close:hover { background: var(--cream); }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-grid .full { grid-column: 1 / -1; }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+
+  label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+  }
+
+  input, select, textarea {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    background: var(--cream);
+    color: var(--text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(26,107,107,0.12);
+  }
+
+  textarea { resize: vertical; min-height: 70px; }
+
+  .form-actions {
+    display: flex; gap: 0.75rem; justify-content: flex-end;
+    margin-top: 1.5rem; padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .btn-cancel {
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-cancel:hover { background: var(--cream); }
+
+  .btn-save {
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--teal);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .btn-save:hover { background: var(--teal-light); transform: translateY(-1px); }
+
+  /* ── DELETE CONFIRM MODAL ── */
+  .confirm-modal {
+    max-width: 380px;
+    text-align: center;
+  }
+
+  .confirm-modal .danger-icon {
+    font-size: 3rem; margin-bottom: 1rem;
+  }
+
+  .confirm-modal p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .confirm-modal .confirm-name {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .btn-delete-confirm {
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--red);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-delete-confirm:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--text);
+    color: #fff;
+    padding: 0.75rem 1.2rem;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    z-index: 500;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { background: var(--green); }
+  .toast.error { background: var(--red); }
+
+  /* ── LOADING ── */
+  .loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+  }
+
+  .spinner {
+    width: 28px; height: 28px;
+    border: 3px solid var(--border);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 1rem;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── QUANTITY ── */
+  .qty { font-size: 0.85rem; color: var(--text-muted); }
+
+  /* ── LOCATION ── */
+  .location-tag {
+    font-size: 0.75rem;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-grid .full { grid-column: 1; }
+    header h1 { font-size: 1.1rem; }
+    .stats-bar, .main-content { padding: 1rem; }
+    table { font-size: 0.8rem; }
+    thead th:nth-child(3),
+    thead th:nth-child(4),
+    tbody td:nth-child(3),
+    tbody td:nth-child(4) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">
+    <div class="logo-icon">💊</div>
+    <h1>Huis<span>apotheek</span></h1>
+  </div>
+  <button class="btn-add" onclick="openAdd()">+ Toevoegen</button>
+</header>
+
+<div class="stats-bar" id="statsBar">
+  <div class="stat-card"><div class="stat-icon total">🗂️</div><div class="stat-info"><div class="stat-number total" id="statTotal">-</div><div class="stat-label">Totaal</div></div></div>
+  <div class="stat-card"><div class="stat-icon ok">✅</div><div class="stat-info"><div class="stat-number ok" id="statOk">-</div><div class="stat-label">In orde</div></div></div>
+  <div class="stat-card"><div class="stat-icon soon">⚠️</div><div class="stat-info"><div class="stat-number soon" id="statSoon">-</div><div class="stat-label">Verloopt binnenkort</div></div></div>
+  <div class="stat-card"><div class="stat-icon expired">🚫</div><div class="stat-info"><div class="stat-number expired" id="statExpired">-</div><div class="stat-label">Verlopen</div></div></div>
+</div>
+
+<div class="main-content">
+  <div class="filter-bar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="zoekInput" placeholder="Zoeken op naam of notitie…" oninput="filterChanged()">
+    </div>
+    <div class="filter-divider"></div>
+    <select id="catFilter" onchange="filterChanged()">
+      <option value="alle">Alle categorieën</option>
+      <option value="pijnstiller">💊 Pijnstillers</option>
+      <option value="spijsvertering">🤢 Spijsvertering</option>
+      <option value="zalf/huid">🧴 Zalf / Huid</option>
+      <option value="allergie">🌿 Allergie</option>
+      <option value="wondzorg">🩹 Wondzorg</option>
+      <option value="vitaminen">🍋 Vitaminen</option>
+      <option value="antibiotica">🦠 Antibiotica</option>
+      <option value="koorts">🌡️ Koorts</option>
+      <option value="ogen/oren">👁️ Ogen / Oren</option>
+      <option value="hulpmiddel">🩺 Hulpmiddelen</option>
+      <option value="overige">📦 Overige</option>
+    </select>
+    <select id="sortFilter" onchange="filterChanged()">
+      <option value="vervaldatum_asc">Vervaldatum ↑</option>
+      <option value="vervaldatum_desc">Vervaldatum ↓</option>
+      <option value="naam">Naam A-Z</option>
+      <option value="categorie">Categorie</option>
+    </select>
+    <button class="btn-expired-filter" id="expiredFilterBtn" onclick="toggleExpiredFilter()">🚫 Toon verlopen</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="mainTable">
+      <thead>
+        <tr>
+          <th>Naam</th>
+          <th>Categorie</th>
+          <th>Hoeveelheid</th>
+          <th>Locatie</th>
+          <th>Vervaldatum</th>
+          <th>Status</th>
+          <th>Acties</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="7"><div class="loading"><div class="spinner"></div>Laden…</div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-backdrop" id="formModal" onclick="handleBackdropClick(event, 'formModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="formTitle">Medicijn toevoegen</h2>
+      <button class="btn-close" onclick="closeModal('formModal')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Naam *</label>
+        <input type="text" id="fNaam" placeholder="Bijv. Paracetamol 500mg" required>
+      </div>
+      <div class="form-group">
+        <label>Categorie *</label>
+        <select id="fCat">
+          <option value="pijnstiller">💊 Pijnstiller</option>
+          <option value="spijsvertering">🤢 Spijsvertering</option>
+          <option value="zalf/huid">🧴 Zalf / Huid</option>
+          <option value="allergie">🌿 Allergie</option>
+          <option value="wondzorg">🩹 Wondzorg</option>
+          <option value="vitaminen">🍋 Vitaminen</option>
+          <option value="antibiotica">🦠 Antibiotica</option>
+          <option value="koorts">🌡️ Koorts</option>
+          <option value="ogen/oren">👁️ Ogen / Oren</option>
+          <option value="hulpmiddel">🩺 Hulpmiddel</option>
+          <option value="overige">📦 Overige</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Vervaldatum *</label>
+        <input type="month" id="fVerval" required>
+      </div>
+      <div class="form-group">
+        <label>Hoeveelheid</label>
+        <input type="text" id="fHoeveelheid" placeholder="20">
+      </div>
+      <div class="form-group">
+        <label>Eenheid</label>
+        <select id="fEenheid">
+          <option value="">-</option>
+          <option value="tabletten">Tabletten</option>
+          <option value="capsules">Capsules</option>
+          <option value="gram">Gram</option>
+          <option value="ml">ml</option>
+          <option value="stuks">Stuks</option>
+          <option value="zakjes">Zakjes</option>
+          <option value="druppels">Druppels</option>
+          <option value="ampullen">Ampullen</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Locatie</label>
+        <input type="text" id="fLocatie" placeholder="Badkamerkast, EHBO-koffer…">
+      </div>
+      <div class="form-group full">
+        <label>Notities</label>
+        <textarea id="fNotities" placeholder="Dosering, bijzonderheden…"></textarea>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeModal('formModal')">Annuleren</button>
+      <button class="btn-save" onclick="saveMedicijn()">💾 Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM MODAL -->
+<div class="modal-backdrop" id="deleteModal" onclick="handleBackdropClick(event, 'deleteModal')">
+  <div class="modal confirm-modal">
+    <div class="danger-icon">⚠️</div>
+    <h2 style="font-family:'Playfair Display',serif; color:var(--red);">Verwijderen?</h2>
+    <p><span class="confirm-name" id="deleteNaam"></span><br>Dit kan niet ongedaan worden gemaakt.</p>
+    <div style="display:flex;gap:0.75rem;justify-content:center;">
+      <button class="btn-cancel" onclick="closeModal('deleteModal')">Annuleren</button>
+      <button class="btn-delete-confirm" onclick="confirmDelete()">🗑️ Verwijderen</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api';
+let allData = [];
+let editId = null;
+let deleteId = null;
+let showOnlyExpired = false;
+
+const catEmoji = {
+  'pijnstiller':    '💊',
+  'spijsvertering': '🤢',
+  'zalf/huid':      '🧴',
+  'allergie':       '🌿',
+  'wondzorg':       '🩹',
+  'vitaminen':      '🍋',
+  'antibiotica':    '🦠',
+  'koorts':         '🌡️',
+  'ogen/oren':      '👁️',
+  'hulpmiddel':     '🩺',
+  'overige':        '📦',
+};
+
+function getStatus(vervaldatum) {
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const exp = new Date(vervaldatum + '-01');
+  // Use end of month
+  exp.setMonth(exp.getMonth() + 1);
+  exp.setDate(0);
+  const soon = new Date(today);
+  soon.setMonth(soon.getMonth() + 3);
+  if (exp < today) return 'expired';
+  if (exp <= soon) return 'soon';
+  return 'ok';
+}
+
+function statusBadge(vervaldatum) {
+  const s = getStatus(vervaldatum);
+  if (s === 'expired') return '<span class="badge badge-expired">🚫 Verlopen</span>';
+  if (s === 'soon') return '<span class="badge badge-soon">⚠️ Binnenkort</span>';
+  return '<span class="badge badge-ok">✅ OK</span>';
+}
+
+function formatDate(d) {
+  const [y, m] = d.split('-');
+  const months = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+  return `${months[parseInt(m)-1]} ${y}`;
+}
+
+async function load() {
+  const zoek = document.getElementById('zoekInput').value;
+  const cat = document.getElementById('catFilter').value;
+  const sorteer = document.getElementById('sortFilter').value;
+  
+  let url = `${API}/medicijnen?sorteer=${sorteer}`;
+  if (cat !== 'alle') url += `&categorie=${encodeURIComponent(cat)}`;
+  if (zoek) url += `&zoek=${encodeURIComponent(zoek)}`;
+  
+  try {
+    const res = await fetch(url);
+    allData = await res.json();
+    render(allData);
+  } catch(e) {
+    document.getElementById('tableBody').innerHTML = `<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--red)">Kon geen verbinding maken met de server.</td></tr>`;
+  }
+  
+  loadStats();
+}
+
+async function loadStats() {
+  try {
+    const res = await fetch(`${API}/statistieken`);
+    const s = await res.json();
+    document.getElementById('statTotal').textContent = s.totaal;
+    document.getElementById('statOk').textContent = s.ok;
+    document.getElementById('statSoon').textContent = s.binnenkort;
+    document.getElementById('statExpired').textContent = s.verlopen;
+  } catch(e) {}
+}
+
+function render(data) {
+  let filtered = data;
+  if (showOnlyExpired) filtered = data.filter(m => getStatus(m.vervaldatum) === 'expired');
+  
+  const tbody = document.getElementById('tableBody');
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="emoji">🔍</div><h3>Niets gevonden</h3><p>${showOnlyExpired ? 'Geen verlopen medicijnen' : 'Pas je filter aan of voeg een medicijn toe'}.</p></div></td></tr>`;
+    return;
+  }
+  
+  const sorteer = document.getElementById('sortFilter').value;
+  let html = '';
+  
+  if (sorteer === 'categorie') {
+    const groups = {};
+    filtered.forEach(m => {
+      if (!groups[m.categorie]) groups[m.categorie] = [];
+      groups[m.categorie].push(m);
+    });
+    Object.entries(groups).forEach(([cat, items]) => {
+      html += `<tr class="cat-header-row"><td colspan="7">${catEmoji[cat] || '📦'} ${cat.charAt(0).toUpperCase() + cat.slice(1)} (${items.length})</td></tr>`;
+      items.forEach(m => html += rowHtml(m));
+    });
+  } else {
+    filtered.forEach(m => html += rowHtml(m));
+  }
+  
+  tbody.innerHTML = html;
+}
+
+function rowHtml(m) {
+  const status = getStatus(m.vervaldatum);
+  const rowClass = status === 'expired' ? 'expired-row' : status === 'soon' ? 'soon-row' : '';
+  const qty = m.hoeveelheid ? `${m.hoeveelheid}${m.eenheid ? ' '+m.eenheid : ''}` : '-';
+  const emoji = catEmoji[m.categorie] || '📦';
+  
+  return `<tr class="${rowClass}">
+    <td>
+      <div class="med-name">${esc(m.naam)}</div>
+      ${m.notities ? `<div class="med-notes">${esc(m.notities)}</div>` : ''}
+    </td>
+    <td><span class="badge badge-cat">${emoji} ${esc(m.categorie)}</span></td>
+    <td><span class="qty">${esc(qty)}</span></td>
+    <td>${m.locatie ? `<span class="location-tag">📍 ${esc(m.locatie)}</span>` : '-'}</td>
+    <td><span class="expiry-date">${formatDate(m.vervaldatum)}</span></td>
+    <td>${statusBadge(m.vervaldatum)}</td>
+    <td>
+      <div class="action-btns">
+        <button class="btn-icon edit" title="Bewerken" onclick="openEdit(${m.id})">✏️</button>
+        <button class="btn-icon delete" title="Verwijderen" onclick="openDelete(${m.id}, '${esc(m.naam)}')">🗑️</button>
+      </div>
+    </td>
+  </tr>`;
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function filterChanged() { load(); }
+
+function toggleExpiredFilter() {
+  showOnlyExpired = !showOnlyExpired;
+  const btn = document.getElementById('expiredFilterBtn');
+  btn.classList.toggle('active', showOnlyExpired);
+  btn.textContent = showOnlyExpired ? '✕ Toon alles' : '🚫 Toon verlopen';
+  render(allData);
+}
+
+// MODAL
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function handleBackdropClick(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+
+function openAdd() {
+  editId = null;
+  document.getElementById('formTitle').textContent = 'Medicijn toevoegen';
+  document.getElementById('fNaam').value = '';
+  document.getElementById('fCat').value = 'pijnstiller';
+  document.getElementById('fVerval').value = '';
+  document.getElementById('fHoeveelheid').value = '';
+  document.getElementById('fEenheid').value = '';
+  document.getElementById('fLocatie').value = '';
+  document.getElementById('fNotities').value = '';
+  openModal('formModal');
+  setTimeout(() => document.getElementById('fNaam').focus(), 300);
+}
+
+async function openEdit(id) {
+  editId = id;
+  try {
+    const res = await fetch(`${API}/medicijnen/${id}`);
+    const m = await res.json();
+    document.getElementById('formTitle').textContent = 'Medicijn bewerken';
+    document.getElementById('fNaam').value = m.naam || '';
+    document.getElementById('fCat').value = m.categorie || 'overige';
+    document.getElementById('fVerval').value = m.vervaldatum ? m.vervaldatum.substring(0,7) : '';
+    document.getElementById('fHoeveelheid').value = m.hoeveelheid || '';
+    document.getElementById('fEenheid').value = m.eenheid || '';
+    document.getElementById('fLocatie').value = m.locatie || '';
+    document.getElementById('fNotities').value = m.notities || '';
+    openModal('formModal');
+  } catch(e) { showToast('Fout bij laden', 'error'); }
+}
+
+async function saveMedicijn() {
+  const naam = document.getElementById('fNaam').value.trim();
+  const categorie = document.getElementById('fCat').value;
+  const verval = document.getElementById('fVerval').value;
+  
+  if (!naam || !verval) {
+    showToast('Naam en vervaldatum zijn verplicht', 'error');
+    return;
+  }
+  
+  const body = {
+    naam,
+    categorie,
+    vervaldatum: verval + '-01',
+    hoeveelheid: document.getElementById('fHoeveelheid').value.trim(),
+    eenheid: document.getElementById('fEenheid').value,
+    locatie: document.getElementById('fLocatie').value.trim(),
+    notities: document.getElementById('fNotities').value.trim(),
+  };
+  
+  try {
+    const url = editId ? `${API}/medicijnen/${editId}` : `${API}/medicijnen`;
+    const method = editId ? 'PUT' : 'POST';
+    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if (!res.ok) throw new Error();
+    closeModal('formModal');
+    showToast(editId ? 'Medicijn bijgewerkt ✓' : 'Medicijn toegevoegd ✓', 'success');
+    load();
+  } catch(e) { showToast('Opslaan mislukt', 'error'); }
+}
+
+function openDelete(id, naam) {
+  deleteId = id;
+  document.getElementById('deleteNaam').textContent = naam;
+  openModal('deleteModal');
+}
+
+async function confirmDelete() {
+  try {
+    const res = await fetch(`${API}/medicijnen/${deleteId}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error();
+    closeModal('deleteModal');
+    showToast('Medicijn verwijderd', 'success');
+    load();
+  } catch(e) { showToast('Verwijderen mislukt', 'error'); }
+}
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal('formModal');
+    closeModal('deleteModal');
+  }
+});
+
+load();
+</script>
+</body>
+</html>
