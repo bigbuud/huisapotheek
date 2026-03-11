@@ -3,6 +3,26 @@
 Inventarisatie van je huisapotheek — met vervaldatums, categorieën en statuswaarschuwingen.
 
 ---
+via docker-compose: 
+
+version: '3.8'
+
+services:
+  huisapotheek:
+    image: ghcr.io/bigbuud/huisapotheek:latest
+    container_name: huisapotheek
+    ports:
+      - "3520:3520"
+    environment:
+      - PUID=1026
+      - PGID=100
+      - TZ=Europe/Brussels
+      - APP_USER=jouwgebruikersnaam
+      - APP_PASSWORD=jouwwachtwoord
+    volumes:
+      - /volume1/docker/huisapotheek:/data
+    restart: always
+
 
 ## 🐳 Synology — User-defined Script
 
@@ -13,9 +33,10 @@ docker run -d \
   -e PUID=1026 \
   -e PGID=100 \
   -e TZ=Europe/Brussels \
+  -e APP_USER=jouwgebruikersnaam \
+  -e APP_PASSWORD=jouwwachtwoord \
   -v /volume1/docker/huisapotheek:/data \
   --restart always \
-  ghcr.io/bigbuud/huisapotheek:latest
 ```
 
 > **Pas aan:**
