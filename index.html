@@ -262,55 +262,98 @@
   .toast.success { background: var(--green); }
   .toast.error { background: var(--red); }
 
-  /* ── MOBILE CARDS ── */
-  @media (max-width: 768px) {
+  /* ── MOBILE CARDS (verborgen op desktop) ── */
+  .mobile-cards { display: none; }
+
+  /* ── KLIKBARE RIJEN ── */
+  tbody tr.clickable { cursor: pointer; }
+
+  @media (max-width: 900px) {
     /* Header */
     header { padding: 0 1rem; height: 60px; }
-    header h1 { font-size: 1.1rem; }
+    header h1 { font-size: 1.05rem; }
     .user-badge { display: none; }
     .btn-add { padding: 0.45rem 0.85rem; font-size: 0.82rem; }
     .btn-logout { padding: 0.4rem 0.7rem; font-size: 0.78rem; }
 
-    /* Stats */
+    /* Stats: 2x2 grid */
     .stats-bar { grid-template-columns: 1fr 1fr; gap: 0.6rem; padding: 0.75rem; }
-    .stat-card { padding: 0.75rem; }
+    .stat-card { padding: 0.75rem; gap: 8px; }
     .stat-number { font-size: 1.4rem; }
-    .stat-label { font-size: 0.68rem; }
-    .stat-icon { width: 34px; height: 34px; font-size: 16px; }
+    .stat-label { font-size: 0.65rem; }
+    .stat-icon { width: 32px; height: 32px; font-size: 15px; }
 
-    /* Main */
-    .main-content { padding: 0 0.75rem 1rem; }
+    /* Main padding */
+    .main-content { padding: 0 0.6rem 1rem; }
 
     /* Filter bar */
-    .filter-bar { padding: 0.75rem; gap: 0.5rem; }
+    .filter-bar { padding: 0.6rem; gap: 0.4rem; }
     .filter-divider { display: none; }
-    .filter-bar select, .btn-expired-filter { font-size: 0.8rem; padding: 0.45rem 0.6rem; }
+    .search-wrap { min-width: 100%; }
+    .filter-bar select { font-size: 0.78rem; padding: 0.4rem 0.5rem; flex: 1; }
+    .btn-expired-filter { font-size: 0.78rem; padding: 0.4rem 0.6rem; }
 
-    /* Verberg de tabel op mobiel */
-    .table-wrap table { display: none; }
+    /* Verberg desktop tabel volledig */
+    .table-wrap { background: transparent; border: none; box-shadow: none; overflow: visible; }
+    .table-wrap table { display: none !important; }
 
-    /* Card layout voor mobiel */
-    .table-wrap { background: transparent; border: none; box-shadow: none; }
-    .mobile-cards { display: none; flex-direction: column; gap: 0.6rem; }
+    /* Toon mobiele kaartjes */
+    .mobile-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
     .med-card {
       background: var(--warm-white);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 0.9rem 1rem;
+      padding: 0.85rem 1rem;
       box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      -webkit-tap-highlight-color: transparent;
     }
+    .med-card:active { transform: scale(0.985); }
     .med-card.expired-card { background: #FFF5F5; border-color: #FFCCCC; }
-    .med-card.soon-card { background: #FFFBF0; border-color: #FFE8A0; }
-    .med-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; }
-    .med-card-name { font-weight: 600; font-size: 0.95rem; flex: 1; }
-    .med-card-notes { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
-    .med-card-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-top: 0.5rem; }
-    .med-card-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .med-card.soon-card { background: #FFFBF0; border-color: #FFE0A0; }
 
-    /* Form */
+    .med-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .med-card-name { font-weight: 600; font-size: 0.95rem; flex: 1; line-height: 1.3; }
+    .med-card-notes { font-size: 0.76rem; color: var(--text-muted); margin-top: 3px; }
+    .med-card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      align-items: center;
+      margin-top: 0.55rem;
+    }
+    .med-card-actions {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .med-card-actions .btn-icon {
+      width: 34px; height: 34px;
+    }
+
+    /* Form modal volledig scherm op mobiel */
+    .modal-backdrop { align-items: flex-end; }
+    .modal {
+      border-radius: 18px 18px 0 0;
+      max-height: 92vh;
+      padding: 1.25rem;
+      width: 100%;
+      max-width: 100%;
+    }
     .form-grid { grid-template-columns: 1fr; }
     .form-grid .full { grid-column: 1; }
-    .modal { padding: 1.25rem; border-radius: 14px; }
 
     /* Login */
     .login-box { margin: 1rem; padding: 2rem 1.5rem; }
@@ -658,15 +701,14 @@ function cardHtml_m(m) {
   const status = getStatus(m.vervaldatum);
   const cardClass = status==='expired'?'expired-card':status==='soon'?'soon-card':'';
   const qty = m.hoeveelheid ? `${m.hoeveelheid}${m.eenheid?' '+m.eenheid:''}` : null;
-  return `<div class="med-card ${cardClass}">
+  return `<div class="med-card ${cardClass}" onclick="openEdit(${m.id})">
     <div class="med-card-top">
-      <div>
+      <div style="flex:1;min-width:0">
         <div class="med-card-name">${esc(m.naam)}</div>
         ${m.notities?`<div class="med-card-notes">${esc(m.notities)}</div>`:''}
       </div>
-      <div class="med-card-actions">
-        <button class="btn-icon edit" onclick="openEdit(${m.id})">✏️</button>
-        <button class="btn-icon delete" onclick="openDelete(${m.id},'${esc(m.naam)}')">🗑️</button>
+      <div class="med-card-actions" onclick="event.stopPropagation()">
+        <button class="btn-icon delete" title="Verwijderen" onclick="openDelete(${m.id},'${esc(m.naam)}')">🗑️</button>
       </div>
     </div>
     <div class="med-card-meta">
@@ -683,14 +725,14 @@ function rowHtml(m) {
   const status = getStatus(m.vervaldatum);
   const rowClass = status==='expired'?'expired-row':status==='soon'?'soon-row':'';
   const qty = m.hoeveelheid ? `${m.hoeveelheid}${m.eenheid?' '+m.eenheid:''}` : '-';
-  return `<tr class="${rowClass}">
+  return `<tr class="${rowClass} clickable" onclick="openEdit(${m.id})" title="Klik om te bewerken">
     <td><div class="med-name">${esc(m.naam)}</div>${m.notities?`<div class="med-notes">${esc(m.notities)}</div>`:''}</td>
     <td><span class="badge badge-cat">${catEmoji[m.categorie]||'📦'} ${esc(m.categorie)}</span></td>
     <td><span class="qty">${esc(qty)}</span></td>
     <td>${m.locatie?`<span class="location-tag">📍 ${esc(m.locatie)}</span>`:'-'}</td>
     <td>${formatDate(m.vervaldatum)}</td>
     <td>${statusBadge(m.vervaldatum)}</td>
-    <td><div class="action-btns">
+    <td><div class="action-btns" onclick="event.stopPropagation()">
       <button class="btn-icon edit" title="Bewerken" onclick="openEdit(${m.id})">✏️</button>
       <button class="btn-icon delete" title="Verwijderen" onclick="openDelete(${m.id},'${esc(m.naam)}')">🗑️</button>
     </div></td>
