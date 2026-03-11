@@ -192,11 +192,16 @@
   .btn-expired-filter.active { background: var(--red-pale); border-color: var(--red); color: var(--red); }
 
   /* ── TABLE ── */
-  .table-wrap { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
-  table { width: 100%; border-collapse: collapse; }
+  .table-wrap { background: var(--warm-white); border: 1px solid var(--border); border-radius: 14px; overflow-x: auto; box-shadow: var(--shadow); }
+  table { width: 100%; min-width: 700px; border-collapse: collapse; table-layout: auto; }
   thead th { background: var(--teal); color: rgba(255,255,255,0.9); padding: 0.85rem 1rem; text-align: left; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; white-space: nowrap; }
-  thead th:first-child { padding-left: 1.5rem; }
-  thead th:last-child { text-align: center; }
+  thead th:first-child { padding-left: 1.5rem; width: 28%; }
+  thead th:nth-child(2) { width: 16%; }
+  thead th:nth-child(3) { width: 12%; }
+  thead th:nth-child(4) { width: 14%; }
+  thead th:nth-child(5) { width: 12%; }
+  thead th:nth-child(6) { width: 12%; }
+  thead th:last-child { text-align: center; width: 8%; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--cream); }
@@ -204,10 +209,10 @@
   tbody tr.expired-row:hover { background: #FFE8E8; }
   tbody tr.soon-row { background: #FFFBF0; }
   tbody tr.soon-row:hover { background: #FFF3D6; }
-  tbody td { padding: 0.9rem 1rem; font-size: 0.88rem; vertical-align: middle; }
+  tbody td { padding: 0.85rem 1rem; font-size: 0.88rem; vertical-align: middle; }
   tbody td:first-child { padding-left: 1.5rem; }
-  .med-name { font-weight: 500; font-size: 0.95rem; }
-  .med-notes { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+  .med-name { font-weight: 500; font-size: 0.92rem; }
+  .med-notes { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
   .badge { display: inline-flex; align-items: center; gap: 4px; padding: 0.25rem 0.65rem; border-radius: 20px; font-size: 0.75rem; font-weight: 500; white-space: nowrap; }
   .badge-cat { background: var(--teal-pale); color: var(--teal); }
   .badge-expired { background: var(--red-pale); color: var(--red); }
@@ -805,16 +810,27 @@ async function saveMedicijn() {
   } catch(e) { showToast('Opslaan mislukt','error'); }
 }
 
-function openDelete(id, naam) { deleteId=id; document.getElementById('deleteNaam').textContent=naam; openModal('deleteModal'); }
+function openDelete(id, naam) { 
+  event.stopPropagation(); 
+  deleteId=id; 
+  document.getElementById('deleteNaam').textContent=naam; 
+  // Reset modal state first
+  closeModal('deleteModal');
+  setTimeout(() => openModal('deleteModal'), 10);
+}
 
 async function confirmDelete() {
   try {
     const res = await fetch(`${API}/medicijnen/${deleteId}`, {method:'DELETE'});
     if (res.status===401) { showLogin(); return; }
+    deleteId = null;
     closeModal('deleteModal');
-    showToast('Medicijn verwijderd','success');
-    load();
-  } catch(e) { showToast('Verwijderen mislukt','error'); }
+    // Kleine vertraging zodat modal animatie klaar is voor de reload
+    setTimeout(() => { showToast('Medicijn verwijderd','success'); load(); }, 150);
+  } catch(e) { 
+    deleteId = null;
+    showToast('Verwijderen mislukt','error'); 
+  }
 }
 
 function showToast(msg, type='') {
