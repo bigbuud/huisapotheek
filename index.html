@@ -164,13 +164,13 @@
   .btn-add:hover { background: var(--cream); transform: translateY(-1px); }
 
   .btn-logout {
-    background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.85);
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 0.45rem 0.9rem; border-radius: 8px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.82rem;
-    cursor: pointer; transition: all 0.2s;
+    background: transparent; color: rgba(255,255,255,0.5);
+    border: none;
+    padding: 0.3rem 0.5rem; border-radius: 6px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.72rem;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 0.01em;
   }
-  .btn-logout:hover { background: rgba(255,255,255,0.2); }
+  .btn-logout:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.1); }
 
   /* ── STAT CARDS ── */
   .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding: 1.5rem 2rem; max-width: 1200px; margin: 0 auto; }
@@ -353,7 +353,7 @@
     header h1 { font-size: 1.05rem; }
     .user-badge { display: none; }
     .btn-add { padding: 0.45rem 0.85rem; font-size: 0.82rem; }
-    .btn-logout { padding: 0.4rem 0.7rem; font-size: 0.78rem; }
+    .btn-logout { padding: 0.25rem 0.4rem; font-size: 0.68rem; }
 
     /* Stats: 2x2 grid */
     .stats-bar { grid-template-columns: 1fr 1fr; gap: 0.6rem; padding: 0.75rem; }
@@ -574,7 +574,10 @@
           <option value="ampullen">Ampullen</option>
         </select>
       </div>
-      <div class="form-group"><label>Locatie</label><input type="text" id="fLocatie" placeholder="Badkamerkast, EHBO-koffer…"></div>
+      <div class="form-group"><label>Locatie</label>
+        <input type="text" id="fLocatie" list="locatie-opties" placeholder="Kies of typ een locatie…" autocomplete="off">
+        <datalist id="locatie-opties"></datalist>
+      </div>
       <div class="form-group full"><label>Notities</label><textarea id="fNotities" placeholder="Dosering, bijzonderheden…"></textarea></div>
       <input type="hidden" id="fBijsluiter">
     </div>
@@ -841,6 +844,17 @@ function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 function handleBackdropClick(e, id) { if (e.target===document.getElementById(id)) closeModal(id); }
 
+// ── Locaties laden in datalist ─────────────────────────────────
+async function loadLocaties() {
+  try {
+    const res = await fetch(`${API}/locaties`);
+    if (!res.ok) return;
+    const lijst = await res.json();
+    const dl = document.getElementById('locatie-opties');
+    dl.innerHTML = lijst.map(l => `<option value="${esc(l)}">`).join('');
+  } catch(e) {}
+}
+
 function openAdd() {
   editId = null;
   document.getElementById('formTitle').textContent = 'Medicijn toevoegen';
@@ -849,11 +863,13 @@ function openAdd() {
   document.getElementById('fEenheid').value = '';
   setBijsluiterLink(null);
   hideAc();
+  loadLocaties();
   openModal('formModal');
   setTimeout(()=>document.getElementById('fNaam').focus(),300);
 }
 
 async function openEdit(id) {
+  loadLocaties();
   editId = id;
   try {
     const res = await fetch(`${API}/medicijnen/${id}`);
