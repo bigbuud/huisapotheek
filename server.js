@@ -7,6 +7,8 @@ const crypto = require('crypto');
 const session = require('express-session');
 
 const app = express();
+const APP_VERSION = '2.0.0-20260315';
+
 app.use(cors());
 app.use(express.json());
 
@@ -2547,6 +2549,12 @@ app.get('/api/zoek-geneesmiddel', requireAuth, (req, res) => {
   res.json(combined);
 });
 
+
+
+// ── Versie check (geen auth nodig) ───────────────────────────────
+app.get('/api/versie', (req, res) => {
+  res.json({ versie: APP_VERSION, medicijnen: GENEESMIDDELEN.length });
+});
 
 // ── DEBUG: test endpoint ──────────────────────────────────────────
 app.get('/api/debug-zoek', requireAuth, (req, res) => {
