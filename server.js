@@ -2529,7 +2529,7 @@ app.get('/api/zoek-geneesmiddel', requireAuth, (req, res) => {
   const q = (req.query.q || '').trim();
   if (q.length < 2) return res.json([]);
   const ql = q.toLowerCase();
-  // Zoek in-memory array: eerst starts-with, dan contains
+  // Volledige array doorzoeken - geen vroege stop
   const startsWith = [];
   const contains = [];
   for (const [naam, categorie, bijsluiter_url] of GENEESMIDDELEN) {
@@ -2539,9 +2539,8 @@ app.get('/api/zoek-geneesmiddel', requireAuth, (req, res) => {
     } else if (nl.includes(ql)) {
       contains.push({ naam, categorie, bijsluiter_url: bijsluiter_url || null });
     }
-    if (startsWith.length >= 10 && contains.length >= 6) break;
   }
-  // Sorteer alfabetisch en combineer
+  // Sorteer alfabetisch, starts-with eerst, max 10 resultaten
   startsWith.sort((a, b) => a.naam.localeCompare(b.naam));
   contains.sort((a, b) => a.naam.localeCompare(b.naam));
   const combined = [...startsWith, ...contains].slice(0, 10);
