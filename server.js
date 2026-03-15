@@ -74,9 +74,9 @@ try { db.exec(`ALTER TABLE medicijnen ADD COLUMN bijsluiter_url TEXT`); } catch(
 // ── Geneesmiddelen databank ────────────────────────────────────────
 // Voeg UNIQUE constraint toe als die nog niet bestaat
 try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON geneesmiddelen_db(naam)'); } catch(e) {}
-// Altijd nieuwe middelen toevoegen (INSERT OR IGNORE = geen duplicaten)
+// INSERT OR REPLACE: altijd updaten zodat nieuwe items ook na herstart worden toegevoegd
 {
-  const ins = db.prepare('INSERT OR IGNORE INTO geneesmiddelen_db (naam, categorie, bijsluiter_url) VALUES (?, ?, ?)');
+  const ins = db.prepare('INSERT OR REPLACE INTO geneesmiddelen_db (naam, categorie, bijsluiter_url) VALUES (?, ?, ?)');
   const medicines = [
     // Pijnstillers
     ['Paracetamol', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=paracetamol'],
@@ -2661,24 +2661,32 @@ if (count.c === 0) {
 
 // ── Autocomplete endpoint ──────────────────────────────────────────
 app.get('/api/zoek-geneesmiddel', requireAuth, (req, res) => {
-  const q = req.query.q || '';
+  const q = (req.query.q || '').trim();
   if (q.length < 2) return res.json([]);
-  const results = db.prepare(`
+  const ql = q.toLowerCase();
+  // 1. Starts-with (hoogste prioriteit)
+  const startsWith = db.prepare(`
     SELECT naam, categorie, bijsluiter_url 
     FROM geneesmiddelen_db 
-    WHERE naam LIKE ? 
+    WHERE lower(naam) LIKE ? 
     ORDER BY naam ASC 
-    LIMIT 8
-  `).all(`${q}%`);
-  // Also search contains
+    LIMIT 10
+  `).all(ql + '%');
+  // 2. Contains (items die niet beginnen met de zoekterm)
   const contains = db.prepare(`
     SELECT naam, categorie, bijsluiter_url 
     FROM geneesmiddelen_db 
-    WHERE naam LIKE ? AND naam NOT LIKE ?
+    WHERE lower(naam) LIKE ? AND lower(naam) NOT LIKE ?
     ORDER BY naam ASC 
-    LIMIT 4
-  `).all(`%${q}%`, `${q}%`);
-  const combined = [...results, ...contains].slice(0, 8);
+    LIMIT 6
+  `).all('%' + ql + '%', ql + '%');
+  // Dedupliceer en beperk tot 10
+  const seen = new Set();
+  const combined = [];
+  for (const r of [...startsWith, ...contains]) {
+    if (!seen.has(r.naam)) { seen.add(r.naam); combined.push(r); }
+    if (combined.length >= 10) break;
+  }
   res.json(combined);
 });
 
