@@ -78,7 +78,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
 {
   const ins = db.prepare('INSERT OR IGNORE INTO geneesmiddelen_db (naam, categorie, bijsluiter_url) VALUES (?, ?, ?)');
   const medicines = [
-    // Pijnstillers
     ['Paracetamol', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=paracetamol'],
     ['Paracetamol 500mg', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=paracetamol'],
     ['Paracetamol 1g', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=paracetamol'],
@@ -98,14 +97,12 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Tradonal', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=tradonal'],
     ['Voltaren gel', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=voltaren'],
     ['Voltaren 50mg', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=voltaren'],
-    // Koorts
     ['Nurofen 200mg', 'koorts', 'https://www.bcfi.be/nl/search?q=nurofen'],
     ['Nurofen 400mg', 'koorts', 'https://www.bcfi.be/nl/search?q=nurofen'],
     ['Nurofen kind', 'koorts', 'https://www.bcfi.be/nl/search?q=nurofen'],
     ['Perdolan kind', 'koorts', 'https://www.bcfi.be/nl/search?q=perdolan'],
     ['Dafalgan kind siroop', 'koorts', 'https://www.bcfi.be/nl/search?q=dafalgan+kind'],
     ['Efferalgan', 'koorts', 'https://www.bcfi.be/nl/search?q=efferalgan'],
-    // Spijsvertering
     ['Rennie', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=rennie'],
     ['Rennie Duo', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=rennie'],
     ['Gaviscon', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=gaviscon'],
@@ -124,7 +121,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Domperidon', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=domperidon'],
     ['Enterogermina', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=enterogermina'],
     ['Orale rehydratatiezouten', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=rehydratatie'],
-    // Allergie
     ['Cetirizine 10mg', 'allergie', 'https://www.bcfi.be/nl/search?q=cetirizine'],
     ['Loratadine 10mg', 'allergie', 'https://www.bcfi.be/nl/search?q=loratadine'],
     ['Desloratadine', 'allergie', 'https://www.bcfi.be/nl/search?q=desloratadine'],
@@ -137,7 +133,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Prevalin neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=prevalin'],
     ['Flixonase neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=flixonase'],
     ['Nasonex neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=nasonex'],
-    // Wondzorg
     ['Betadine', 'wondzorg', 'https://www.bcfi.be/nl/search?q=betadine'],
     ['Betadine wondspray', 'wondzorg', 'https://www.bcfi.be/nl/search?q=betadine'],
     ['Jodium tinctuur', 'wondzorg', 'https://www.bcfi.be/nl/search?q=jodium'],
@@ -148,7 +143,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Compeed', 'wondzorg', 'https://www.bcfi.be/nl/search?q=compeed'],
     ['Hansaplast', 'wondzorg', 'https://www.bcfi.be/nl/search?q=hansaplast'],
     ['Gaaskompres', 'wondzorg', 'https://www.bcfi.be/nl/search?q=gaaskompres'],
-    // Zalf / Huid
     ['Bepanthen zalf', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=bepanthen'],
     ['Bepanthen crème', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=bepanthen'],
     ['Hydrocortison crème 1%', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=hydrocortison'],
@@ -168,7 +162,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Aloë vera gel', 'zalf/huid', null],
     ['After sun', 'zalf/huid', null],
     ['Fenistil gel', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=fenistil'],
-    // Vitaminen
     ['Vitamine C 500mg', 'vitaminen', 'https://www.bcfi.be/nl/search?q=vitamine+c'],
     ['Vitamine C 1000mg', 'vitaminen', 'https://www.bcfi.be/nl/search?q=vitamine+c'],
     ['Vitamine D3 400IE', 'vitaminen', 'https://www.bcfi.be/nl/search?q=vitamine+d'],
@@ -182,7 +175,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Zink 10mg', 'vitaminen', 'https://www.bcfi.be/nl/search?q=zink'],
     ['Omega-3', 'vitaminen', null],
     ['Probiotica', 'vitaminen', null],
-    // Ogen / Oren
     ['Visine oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=visine'],
     ['Artelac oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=artelac'],
     ['Systane oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=systane'],
@@ -191,7 +183,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Physiomer neusspray', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=physiomer'],
     ['Otosil oordruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=otosil'],
     ['Cerumenex oordruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=cerumenex'],
-    // Antibiotica (vaak op voorschrift maar kan thuis staan)
     ['Amoxicilline 500mg', 'antibiotica', 'https://www.bcfi.be/nl/search?q=amoxicilline'],
     ['Amoxicilline 1g', 'antibiotica', 'https://www.bcfi.be/nl/search?q=amoxicilline'],
     ['Augmentin', 'antibiotica', 'https://www.bcfi.be/nl/search?q=augmentin'],
@@ -199,7 +190,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Claritromycine', 'antibiotica', 'https://www.bcfi.be/nl/search?q=claritromycine'],
     ['Doxycycline', 'antibiotica', 'https://www.bcfi.be/nl/search?q=doxycycline'],
     ['Trimethoprim', 'antibiotica', 'https://www.bcfi.be/nl/search?q=trimethoprim'],
-    // Hoest / Verkoudheid
     ['Bisolvon siroop', 'overige', 'https://www.bcfi.be/nl/search?q=bisolvon'],
     ['Mucosolvan siroop', 'overige', 'https://www.bcfi.be/nl/search?q=mucosolvan'],
     ['Bromhexine', 'overige', 'https://www.bcfi.be/nl/search?q=bromhexine'],
@@ -209,7 +199,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Neo-Angin', 'overige', 'https://www.bcfi.be/nl/search?q=neo-angin'],
     ['Strepsils', 'overige', 'https://www.bcfi.be/nl/search?q=strepsils'],
     ['Vicks VapoRub', 'zalf/huid', null],
-    // Hulpmiddelen
     ['Thermometer digitaal', 'hulpmiddel', null],
     ['Bloeddrukmeter', 'hulpmiddel', null],
     ['Pulsoximeter', 'hulpmiddel', null],
@@ -218,8 +207,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Spuit 5ml', 'hulpmiddel', null],
     ['Handschoenen latex', 'hulpmiddel', null],
     ['Mondmasker', 'hulpmiddel', null],
-
-    // ── Uitbreiding: Allergie ──────────────────────────────────────
     ['Bellozal 20mg', 'allergie', 'https://www.bcfi.be/nl/search?q=bilastine'],
     ['Bellozal ODT 20mg', 'allergie', 'https://www.bcfi.be/nl/search?q=bilastine'],
     ['Bilastine 20mg', 'allergie', 'https://www.bcfi.be/nl/search?q=bilastine'],
@@ -234,8 +221,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Avamys neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=fluticason'],
     ['Dymista neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=dymista'],
     ['Opticrom oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=cromoglicinezuur'],
-
-    // ── Uitbreiding: Pijnstillers / Ontstekingsremmers ────────────
     ['Dafalgan Odis', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=paracetamol'],
     ['Dafalgan Forte 1g', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=dafalgan'],
     ['Paracetamol kind 250mg', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=paracetamol'],
@@ -250,8 +235,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Codeisan', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=codeine'],
     ['Nimed 100mg', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=nimesulide'],
     ['Valdispert', 'overige', 'https://www.bcfi.be/nl/search?q=valeriaanwortel'],
-
-    // ── Uitbreiding: Spijsvertering ───────────────────────────────
     ['Imodium Lingual', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=loperamide'],
     ['Imodium Instant', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=loperamide'],
     ['Nifuroxazide 200mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=nifuroxazide'],
@@ -281,8 +264,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Iberogast', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=iberogast'],
     ['Gaviscon Advance', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=gaviscon'],
     ['Questran', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=colestyramine'],
-
-    // ── Uitbreiding: Hoest / Verkoudheid ─────────────────────────
     ['Actifed', 'overige', 'https://www.bcfi.be/nl/search?q=actifed'],
     ['Rhinathiol', 'overige', 'https://www.bcfi.be/nl/search?q=carbocisteïne'],
     ['Carbocisteïne', 'overige', 'https://www.bcfi.be/nl/search?q=carbocisteine'],
@@ -304,8 +285,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Decongestivum', 'overige', null],
     ['Xylometazoline neusspray', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=xylometazoline'],
     ['Oxymetazoline neusspray', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=oxymetazoline'],
-
-    // ── Uitbreiding: Zalf / Huid ──────────────────────────────────
     ['Bactroban zalf', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=mupirocine'],
     ['Mupirocine zalf', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=mupirocine'],
     ['Aciclovir crème 5%', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=aciclovir'],
@@ -331,8 +310,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Silvercel verband', 'wondzorg', null],
     ['Mepilex', 'wondzorg', null],
     ['Lyofoam verband', 'wondzorg', null],
-
-    // ── Uitbreiding: Ogen / Oren ──────────────────────────────────
     ['Tobradex oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=tobramycine'],
     ['Tobrex oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=tobramycine'],
     ['Chloramphenicol oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=chloorfenicum'],
@@ -346,8 +323,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Aqua maris neusspray', 'ogen/oren', null],
     ['Nasonex kind', 'allergie', 'https://www.bcfi.be/nl/search?q=mometason'],
     ['Mometason neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=mometason'],
-
-    // ── Uitbreiding: Vitaminen / Supplementen ─────────────────────
     ['Vitamine B1 100mg', 'vitaminen', 'https://www.bcfi.be/nl/search?q=thiamine'],
     ['Vitamine B6 40mg', 'vitaminen', 'https://www.bcfi.be/nl/search?q=pyridoxine'],
     ['Vitamine E 400IE', 'vitaminen', 'https://www.bcfi.be/nl/search?q=vitamine+e'],
@@ -372,16 +347,12 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['D-Mannose', 'vitaminen', null],
     ['Zink 25mg', 'vitaminen', null],
     ['Selenium 200mcg', 'vitaminen', null],
-
-    // ── Uitbreiding: Slaap / Stress / Zenuwstelsel ────────────────
     ['Sedistress', 'overige', null],
     ['Dormiplant', 'overige', null],
     ['Baldrian ratiopharm', 'overige', null],
     ['Passiflora', 'overige', null],
     ['Euphytose', 'overige', null],
     ['Biral', 'overige', null],
-
-    // ── Uitbreiding: Antibiotica (op voorschrift) ─────────────────
     ['Amoxicilline 250mg', 'antibiotica', 'https://www.bcfi.be/nl/search?q=amoxicilline'],
     ['Amoxicilline suspensie', 'antibiotica', 'https://www.bcfi.be/nl/search?q=amoxicilline'],
     ['Clamoxyl', 'antibiotica', 'https://www.bcfi.be/nl/search?q=amoxicilline'],
@@ -402,8 +373,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Metronidazol 250mg', 'antibiotica', 'https://www.bcfi.be/nl/search?q=metronidazol'],
     ['Metronidazol 500mg', 'antibiotica', 'https://www.bcfi.be/nl/search?q=metronidazol'],
     ['Flagyl', 'antibiotica', 'https://www.bcfi.be/nl/search?q=metronidazol'],
-
-    // ── Uitbreiding: Hart / Bloeddruk / Cholesterol ───────────────
     ['Atorvastatine 10mg', 'overige', 'https://www.bcfi.be/nl/search?q=atorvastatine'],
     ['Atorvastatine 20mg', 'overige', 'https://www.bcfi.be/nl/search?q=atorvastatine'],
     ['Simvastatine 20mg', 'overige', 'https://www.bcfi.be/nl/search?q=simvastatine'],
@@ -418,8 +387,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Metoprolol 100mg', 'overige', 'https://www.bcfi.be/nl/search?q=metoprolol'],
     ['Valsartan 80mg', 'overige', 'https://www.bcfi.be/nl/search?q=valsartan'],
     ['Losartan 50mg', 'overige', 'https://www.bcfi.be/nl/search?q=losartan'],
-
-    // ── Uitbreiding: Diabetes ─────────────────────────────────────
     ['Metformine 500mg', 'overige', 'https://www.bcfi.be/nl/search?q=metformine'],
     ['Metformine 850mg', 'overige', 'https://www.bcfi.be/nl/search?q=metformine'],
     ['Metformine 1000mg', 'overige', 'https://www.bcfi.be/nl/search?q=metformine'],
@@ -427,14 +394,10 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Insuline pen', 'hulpmiddel', null],
     ['Glucosemeter', 'hulpmiddel', null],
     ['Teststrips glucose', 'hulpmiddel', null],
-
-    // ── Uitbreiding: Gynaecologie ─────────────────────────────────
     ['Canesten vaginaal', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=clotrimazol'],
     ['Gyno-Pevaryl vaginaal', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=econazol'],
     ['Vagisil', 'zalf/huid', null],
     ['Replens vaginaalgel', 'zalf/huid', null],
-
-    // ── Uitbreiding: Reisgeneeskunde ──────────────────────────────
     ['Malarone', 'overige', 'https://www.bcfi.be/nl/search?q=atovaquon+proguanil'],
     ['Doxycycline 100mg', 'antibiotica', 'https://www.bcfi.be/nl/search?q=doxycycline'],
     ['Primaquine', 'overige', 'https://www.bcfi.be/nl/search?q=primaquine'],
@@ -445,8 +408,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Zonnebrand SPF30', 'zalf/huid', null],
     ['Zonnebrand SPF50', 'zalf/huid', null],
     ['Lifesystems reiskit', 'hulpmiddel', null],
-
-    // ── Uitbreiding: Overige veelgebruikte ────────────────────────
     ['Levothyroxine 25mcg', 'overige', 'https://www.bcfi.be/nl/search?q=levothyroxine'],
     ['Levothyroxine 50mcg', 'overige', 'https://www.bcfi.be/nl/search?q=levothyroxine'],
     ['Levothyroxine 100mcg', 'overige', 'https://www.bcfi.be/nl/search?q=levothyroxine'],
@@ -467,8 +428,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Lorazepam 1mg', 'overige', 'https://www.bcfi.be/nl/search?q=lorazepam'],
     ['Zolpidem 5mg', 'overige', 'https://www.bcfi.be/nl/search?q=zolpidem'],
     ['Zolpidem 10mg', 'overige', 'https://www.bcfi.be/nl/search?q=zolpidem'],
-
-    // ── Pijnstillers uitgebreid ───────────────────────────────────
     ['Doliprane 1000mg', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=paracetamol'],
     ['Paracetamol zetpil 250mg', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=paracetamol'],
     ['Paracetamol zetpil 500mg', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=paracetamol'],
@@ -509,8 +468,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Capsaicine crème', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=capsaicine'],
     ['Lidocaïne gel', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=lidocaine'],
     ['EMLA crème', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=lidocaine+prilocaine'],
-
-    // ── Koorts uitgebreid ─────────────────────────────────────────
     ['Perdolan Mono 500mg', 'koorts', 'https://www.bcfi.be/nl/search?q=paracetamol'],
     ['Nurofen Express 200mg', 'koorts', 'https://www.bcfi.be/nl/search?q=ibuprofen'],
     ['Aspirine Kind 100mg', 'koorts', 'https://www.bcfi.be/nl/search?q=aspirine'],
@@ -519,8 +476,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Paracetamol Kind siroop', 'koorts', 'https://www.bcfi.be/nl/search?q=paracetamol'],
     ['Ibuprofen Kind 100mg/5ml', 'koorts', 'https://www.bcfi.be/nl/search?q=ibuprofen'],
     ['Apiretal siroop', 'koorts', 'https://www.bcfi.be/nl/search?q=paracetamol'],
-
-    // ── Spijsvertering uitgebreid ─────────────────────────────────
     ['Omeprazol 10mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=omeprazol'],
     ['Omeprazol 40mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=omeprazol'],
     ['Losec 20mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=omeprazol'],
@@ -559,8 +514,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Creon 10000', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=pancreatine'],
     ['Sucralfaat 1g', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=sucralfaat'],
     ['Bismuth subsalicylaat', 'spijsvertering', null],
-
-    // ── Allergie uitgebreid ───────────────────────────────────────
     ['Cetirizine 5mg', 'allergie', 'https://www.bcfi.be/nl/search?q=cetirizine'],
     ['Levocetirizine 5mg', 'allergie', 'https://www.bcfi.be/nl/search?q=levocetirizine'],
     ['Xyzal 5mg', 'allergie', 'https://www.bcfi.be/nl/search?q=levocetirizine'],
@@ -578,8 +531,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Cromolyn neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=cromoglicinezuur'],
     ['Beconase neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=beclometason'],
     ['Beclometason neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=beclometason'],
-
-    // ── Wondzorg uitgebreid ───────────────────────────────────────
     ['Betadine scrub', 'wondzorg', 'https://www.bcfi.be/nl/search?q=povidon-jood'],
     ['Betadine wondgel', 'wondzorg', 'https://www.bcfi.be/nl/search?q=povidon-jood'],
     ['Betadine oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=povidon-jood'],
@@ -604,8 +555,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Traumeel gel', 'wondzorg', null],
     ['Arnica gel', 'zalf/huid', null],
     ['Arnica zalf', 'zalf/huid', null],
-
-    // ── Zalf/Huid uitgebreid ──────────────────────────────────────
     ['Advantan crème', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=methylprednisolon'],
     ['Elocom crème', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=mometason'],
     ['Mometason crème', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=mometason'],
@@ -638,8 +587,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Contractubex gel', 'zalf/huid', null],
     ['Kelo-cote gel', 'zalf/huid', null],
     ['Bio-oil', 'zalf/huid', null],
-
-    // ── Ogen/Oren uitgebreid ──────────────────────────────────────
     ['Bion Tears oogdruppels', 'ogen/oren', null],
     ['Refresh oogdruppels', 'ogen/oren', null],
     ['Optive oogdruppels', 'ogen/oren', null],
@@ -666,8 +613,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Humer neusspray', 'ogen/oren', null],
     ['Audispray oorspray', 'ogen/oren', null],
     ['Earex oordruppels', 'ogen/oren', null],
-
-    // ── Vitaminen uitgebreid ──────────────────────────────────────
     ['Vitamine A 5000IE', 'vitaminen', null],
     ['Vitamine B complex', 'vitaminen', null],
     ['Vitamine B2 riboflavine', 'vitaminen', null],
@@ -722,8 +667,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Evening primrose olie', 'vitaminen', null],
     ['Teunisbloemolie', 'vitaminen', null],
     ['Lijnzaadolie capsules', 'vitaminen', null],
-
-    // ── Antibiotica uitgebreid ────────────────────────────────────
     ['Amoxicilline 750mg', 'antibiotica', 'https://www.bcfi.be/nl/search?q=amoxicilline'],
     ['Penicilline V 500mg', 'antibiotica', 'https://www.bcfi.be/nl/search?q=fenoxymethylpenicilline'],
     ['Flucloxacilline 500mg', 'antibiotica', 'https://www.bcfi.be/nl/search?q=flucloxacilline'],
@@ -753,8 +696,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Pivmecillinam 200mg', 'antibiotica', 'https://www.bcfi.be/nl/search?q=pivmecillinam'],
     ['Selexid 200mg', 'antibiotica', 'https://www.bcfi.be/nl/search?q=pivmecillinam'],
     ['Tinidazol 500mg', 'antibiotica', 'https://www.bcfi.be/nl/search?q=tinidazol'],
-
-    // ── Hart/Bloeddruk uitgebreid ─────────────────────────────────
     ['Enalapril 5mg', 'overige', 'https://www.bcfi.be/nl/search?q=enalapril'],
     ['Enalapril 10mg', 'overige', 'https://www.bcfi.be/nl/search?q=enalapril'],
     ['Enalapril 20mg', 'overige', 'https://www.bcfi.be/nl/search?q=enalapril'],
@@ -800,8 +741,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Fenofibrate 145mg', 'overige', 'https://www.bcfi.be/nl/search?q=fenofibrate'],
     ['Pravastatin 20mg', 'overige', 'https://www.bcfi.be/nl/search?q=pravastatine'],
     ['Fluvastatin 40mg', 'overige', 'https://www.bcfi.be/nl/search?q=fluvastatine'],
-
-    // ── Diabetes uitgebreid ───────────────────────────────────────
     ['Gliclazide 30mg', 'overige', 'https://www.bcfi.be/nl/search?q=gliclazide'],
     ['Gliclazide 80mg', 'overige', 'https://www.bcfi.be/nl/search?q=gliclazide'],
     ['Glimepiride 1mg', 'overige', 'https://www.bcfi.be/nl/search?q=glimepiride'],
@@ -822,8 +761,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Insulinepen naald', 'hulpmiddel', null],
     ['Freestyle Libre sensor', 'hulpmiddel', null],
     ['Dextrose gel', 'overige', null],
-
-    // ── Zenuwstelsel / Psychiatrie ────────────────────────────────
     ['Fluoxetine 20mg', 'overige', 'https://www.bcfi.be/nl/search?q=fluoxetine'],
     ['Prozac 20mg', 'overige', 'https://www.bcfi.be/nl/search?q=fluoxetine'],
     ['Fluvoxamine 50mg', 'overige', 'https://www.bcfi.be/nl/search?q=fluvoxamine'],
@@ -878,8 +815,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Betahistine 8mg', 'overige', 'https://www.bcfi.be/nl/search?q=betahistine'],
     ['Betahistine 16mg', 'overige', 'https://www.bcfi.be/nl/search?q=betahistine'],
     ['Serc 16mg', 'overige', 'https://www.bcfi.be/nl/search?q=betahistine'],
-
-    // ── Schildklier / Hormonen ────────────────────────────────────
     ['Levothyroxine 75mcg', 'overige', 'https://www.bcfi.be/nl/search?q=levothyroxine'],
     ['Levothyroxine 125mcg', 'overige', 'https://www.bcfi.be/nl/search?q=levothyroxine'],
     ['Thyrax 100mcg', 'overige', 'https://www.bcfi.be/nl/search?q=levothyroxine'],
@@ -898,8 +833,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Livial 2.5mg', 'overige', 'https://www.bcfi.be/nl/search?q=tibolon'],
     ['Testosteron gel', 'overige', 'https://www.bcfi.be/nl/search?q=testosteron'],
     ['Androgel', 'overige', 'https://www.bcfi.be/nl/search?q=testosteron'],
-
-    // ── Gynaecologie uitgebreid ───────────────────────────────────
     ['Fluconazol 150mg', 'overige', 'https://www.bcfi.be/nl/search?q=fluconazol'],
     ['Diflucan 150mg', 'overige', 'https://www.bcfi.be/nl/search?q=fluconazol'],
     ['Clotrimazol vaginaal', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=clotrimazol'],
@@ -911,8 +844,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Morning-after pil', 'overige', 'https://www.bcfi.be/nl/search?q=levonorgestrel'],
     ['Norlevo 1.5mg', 'overige', 'https://www.bcfi.be/nl/search?q=levonorgestrel'],
     ['Ellaone 30mg', 'overige', 'https://www.bcfi.be/nl/search?q=ulipristal'],
-
-    // ── Urologie ──────────────────────────────────────────────────
     ['Tamsulosine 0.4mg', 'overige', 'https://www.bcfi.be/nl/search?q=tamsulosine'],
     ['Omnic 0.4mg', 'overige', 'https://www.bcfi.be/nl/search?q=tamsulosine'],
     ['Alfuzosine 10mg', 'overige', 'https://www.bcfi.be/nl/search?q=alfuzosine'],
@@ -921,8 +852,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Solifenacine 5mg', 'overige', 'https://www.bcfi.be/nl/search?q=solifenacine'],
     ['Vesicare 5mg', 'overige', 'https://www.bcfi.be/nl/search?q=solifenacine'],
     ['Oxybutynine 5mg', 'overige', 'https://www.bcfi.be/nl/search?q=oxybutynine'],
-
-    // ── Luchtwegen / Astma / COPD uitgebreid ─────────────────────
     ['Salbutamol 100mcg', 'overige', 'https://www.bcfi.be/nl/search?q=salbutamol'],
     ['Bricanyl inhaler', 'overige', 'https://www.bcfi.be/nl/search?q=terbutaline'],
     ['Terbutaline inhaler', 'overige', 'https://www.bcfi.be/nl/search?q=terbutaline'],
@@ -945,8 +874,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Aerobid inhaler', 'overige', null],
     ['Spacer inhalator', 'hulpmiddel', null],
     ['Vernevelaar', 'hulpmiddel', null],
-
-    // ── Overige / Diversen ────────────────────────────────────────
     ['Hydroxychloroquine 200mg', 'overige', 'https://www.bcfi.be/nl/search?q=hydroxychloroquine'],
     ['Plaquenil 200mg', 'overige', 'https://www.bcfi.be/nl/search?q=hydroxychloroquine'],
     ['Allopurinol 100mg', 'overige', 'https://www.bcfi.be/nl/search?q=allopurinol'],
@@ -991,8 +918,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Microlax baby', 'spijsvertering', null],
     ['Colpermin', 'spijsvertering', null],
     ['Pepermuntolie capsules', 'spijsvertering', null],
-
-    // ── Uitbreiding naar 2000 medicijnen ─────────────────────────
     ['Azelaic acid creme 20pct', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=azelaïnezuur'],
     ['Tretinoine creme 0.025pct', 'zalf/huid', null],
     ['Adapaleen 0.1pct gel', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=adapaleen'],
@@ -1094,7 +1019,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Benzylbenzoaat 25pct', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=benzylbenzoaat'],
     ['Lyclear creme', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=permetrine'],
     ['Permetrine 5pct creme', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=permetrine'],
-    ['Hedrin luizenlotion', 'zalf/huid', null],
     ['Full Marks lotion', 'zalf/huid', null],
     ['DEET muggenspray', 'hulpmiddel', null],
     ['Mesalazine 800mg', 'overige', 'https://www.bcfi.be/nl/search?q=mesalazine'],
@@ -1122,20 +1046,12 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Xeljanz 5mg', 'overige', 'https://www.bcfi.be/nl/search?q=tofacitinib'],
     ['Enterol gist capsules', 'spijsvertering', null],
     ['VSL3 probiotica', 'spijsvertering', null],
-    ['Duspatalin 135mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=mebeverine'],
-    ['Mebeverine 135mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=mebeverine'],
-    ['Spasmomen 40mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=otilonium'],
-    ['Creon 10000', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=pancreatine'],
-    ['Sucralfaat 1g', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=sucralfaat'],
     ['Colofac 135mg', 'spijsvertering', null],
     ['Debridat 100mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=trimebutine'],
     ['Trimebutine 100mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=trimebutine'],
-    ['Racecadotril 100mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=racecadotril'],
-    ['Tiorfix 100mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=racecadotril'],
     ['Colopeg sachets', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=macrogol'],
     ['Moviprep sachets', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=macrogol'],
     ['Sorbitol 70pct oplossing', 'spijsvertering', null],
-    ['Ursochol 300mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=ursodeoxycholzuur'],
     ['Phosphalugel gel', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=aluminiumfosfaat'],
     ['Naratriptan 2.5mg', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=naratriptan'],
     ['Almotriptan 12.5mg', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=almotriptan'],
@@ -1269,7 +1185,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Ofev 150mg', 'overige', 'https://www.bcfi.be/nl/search?q=nintedanib'],
     ['Pirfenidon 267mg', 'overige', 'https://www.bcfi.be/nl/search?q=pirfenidon'],
     ['Esbriet 267mg', 'overige', 'https://www.bcfi.be/nl/search?q=pirfenidon'],
-    ['Theofylline 200mg', 'overige', 'https://www.bcfi.be/nl/search?q=theofylline'],
     ['Spacer inhalator volwassene', 'hulpmiddel', null],
     ['Propylthiouracil 100mg', 'overige', 'https://www.bcfi.be/nl/search?q=propylthiouracil'],
     ['Carbimazol 20mg', 'overige', 'https://www.bcfi.be/nl/search?q=carbimazol'],
@@ -1297,10 +1212,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Metyrapone 250mg', 'overige', 'https://www.bcfi.be/nl/search?q=metyrapon'],
     ['Osilodrostat 1mg', 'overige', 'https://www.bcfi.be/nl/search?q=osilodrostat'],
     ['Isturisa 1mg', 'overige', 'https://www.bcfi.be/nl/search?q=osilodrostat'],
-    ['Prednisone 5mg', 'overige', 'https://www.bcfi.be/nl/search?q=prednison'],
-    ['Prednisone 20mg', 'overige', 'https://www.bcfi.be/nl/search?q=prednison'],
-    ['Medrol 16mg', 'overige', 'https://www.bcfi.be/nl/search?q=methylprednisolon'],
-    ['Dexamethason 0.5mg', 'overige', 'https://www.bcfi.be/nl/search?q=dexametason'],
     ['Dutasteride 0.5mg', 'overige', 'https://www.bcfi.be/nl/search?q=dutasteride'],
     ['Avodart 0.5mg', 'overige', 'https://www.bcfi.be/nl/search?q=dutasteride'],
     ['Doxazosine 2mg', 'overige', 'https://www.bcfi.be/nl/search?q=doxazosine'],
@@ -1400,21 +1311,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Cyclopentolaat oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=cyclopentolaat'],
     ['Tropicamide oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=tropicamide'],
     ['Proxymetacaine oogdruppels', 'ogen/oren', null],
-    ['Bion Tears oogdruppels', 'ogen/oren', null],
-    ['Refresh oogdruppels', 'ogen/oren', null],
-    ['Optive oogdruppels', 'ogen/oren', null],
-    ['Viscotears ooggel', 'ogen/oren', null],
-    ['Vidisic ooggel', 'ogen/oren', null],
-    ['Allergo-Comod oogdruppels', 'ogen/oren', null],
-    ['Emadine oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=emedastine'],
-    ['Livostin oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=levocabastine'],
-    ['Ciloxan oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=ciprofloxacine'],
-    ['Exocin oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=ofloxacine'],
-    ['Fucithalmic ooggel', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=fusidine'],
-    ['Gentamicine oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=gentamicine'],
-    ['Pred Forte oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=prednisolon'],
-    ['Maxidex oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=dexametason'],
-    ['Xalatan oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=latanoprost'],
     ['NAD plus supplement', 'vitaminen', null],
     ['NMN supplement 250mg', 'vitaminen', null],
     ['NR supplement 300mg', 'vitaminen', null],
@@ -1515,16 +1411,9 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Yaz anticonceptie', 'overige', 'https://www.bcfi.be/nl/search?q=drospirenon'],
     ['Evra anticonceptiepleisters', 'overige', null],
     ['NuvaRing vaginaalring', 'overige', null],
-    ['Morning-after pil', 'overige', 'https://www.bcfi.be/nl/search?q=levonorgestrel'],
-    ['Norlevo 1.5mg', 'overige', 'https://www.bcfi.be/nl/search?q=levonorgestrel'],
     ['Ellaone 30mg ulipristal', 'overige', 'https://www.bcfi.be/nl/search?q=ulipristal'],
     ['Fluconazol 150mg gyno', 'overige', 'https://www.bcfi.be/nl/search?q=fluconazol'],
-    ['Diflucan 150mg', 'overige', 'https://www.bcfi.be/nl/search?q=fluconazol'],
     ['Clotrimazol vaginaal 500mg', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=clotrimazol'],
-    ['Gyno-Pevaryl vaginaal', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=econazol'],
-    ['Gyno-Daktarin vaginaal', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=miconazol'],
-    ['Metronidazol vaginaal', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=metronidazol'],
-    ['Zidoval vaginaalgel', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=metronidazol'],
     ['Vagifem vaginaalzetpil', 'overige', null],
     ['Oekolp vaginaalcreme', 'zalf/huid', null],
     ['Gynoflor vaginaaltabletten', 'wondzorg', null],
@@ -1627,7 +1516,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Bloedsuikerteststrips', 'hulpmiddel', null],
     ['Ketontest strips bloed', 'hulpmiddel', null],
     ['Insulinepen naald 4mm', 'hulpmiddel', null],
-    ['Freestyle Libre sensor', 'hulpmiddel', null],
     ['Dextrose gel 40pct', 'overige', null],
     ['Compeed blaar groot', 'wondzorg', null],
     ['Compeed hak', 'wondzorg', null],
@@ -1697,13 +1585,11 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Lamotrigine 200mg', 'overige', 'https://www.bcfi.be/nl/search?q=lamotrigine'],
     ['Valproaat 300mg', 'overige', 'https://www.bcfi.be/nl/search?q=valproaat'],
     ['Depakine 200mg', 'overige', 'https://www.bcfi.be/nl/search?q=valproaat'],
-    ['Lithiumcarbonaat 400mg', 'overige', 'https://www.bcfi.be/nl/search?q=lithium'],
     ['Fluoxetine 40mg', 'overige', 'https://www.bcfi.be/nl/search?q=fluoxetine'],
     ['Prozac 40mg', 'overige', 'https://www.bcfi.be/nl/search?q=fluoxetine'],
     ['Venlafaxine 75mg', 'overige', 'https://www.bcfi.be/nl/search?q=venlafaxine'],
     ['Efexor 150mg', 'overige', 'https://www.bcfi.be/nl/search?q=venlafaxine'],
     ['Duloxetine 60mg', 'overige', 'https://www.bcfi.be/nl/search?q=duloxetine'],
-    ['Cymbalta 60mg', 'overige', 'https://www.bcfi.be/nl/search?q=duloxetine'],
     ['Amitriptyline 50mg', 'overige', 'https://www.bcfi.be/nl/search?q=amitriptyline'],
     ['Nortriptyline 50mg', 'overige', 'https://www.bcfi.be/nl/search?q=nortriptyline'],
     ['Quetiapine 50mg', 'overige', 'https://www.bcfi.be/nl/search?q=quetiapine'],
@@ -2156,12 +2042,9 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Liposomaal vitamine D', 'vitaminen', null],
     ['Liposomaal magnesium', 'vitaminen', null],
     ['Liposomaal coenzyme Q10', 'vitaminen', null],
-
-    // ── Uitbreiding merknamen en ontbrekende medicijnen ─────────
     ['Betnovate creme', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=betametason'],
     ['Betnovate zalf', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=betametason'],
     ['Betacream creme', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=betametason'],
-    ['Diprogenta creme', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=betametason+gentamicine'],
     ['Diprogenta zalf', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=betametason+gentamicine'],
     ['Diprosone lotion', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=betametason'],
     ['Nerisone creme', 'zalf/huid', 'https://www.bcfi.be/nl/search?q=difluocortoloon'],
@@ -2274,7 +2157,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Trulicity 0.75mg pen', 'overige', 'https://www.bcfi.be/nl/search?q=dulaglutide'],
     ['Dulaglutide 1.5mg pen', 'overige', 'https://www.bcfi.be/nl/search?q=dulaglutide'],
     ['Rybelsus 3mg semaglutide oraal', 'overige', 'https://www.bcfi.be/nl/search?q=semaglutide'],
-    ['Rybelsus 7mg', 'overige', 'https://www.bcfi.be/nl/search?q=semaglutide'],
     ['Rybelsus 14mg', 'overige', 'https://www.bcfi.be/nl/search?q=semaglutide'],
     ['Byetta 5mcg exenatide', 'overige', 'https://www.bcfi.be/nl/search?q=exenatide'],
     ['Bydureon pen exenatide', 'overige', 'https://www.bcfi.be/nl/search?q=exenatide'],
@@ -2286,13 +2168,10 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Janumet 50mg 500mg', 'overige', 'https://www.bcfi.be/nl/search?q=sitagliptine+metformine'],
     ['Velmetia 50mg 850mg', 'overige', 'https://www.bcfi.be/nl/search?q=sitagliptine+metformine'],
     ['Galvus 50mg vildagliptine', 'overige', 'https://www.bcfi.be/nl/search?q=vildagliptine'],
-    ['Vildagliptine 50mg', 'overige', 'https://www.bcfi.be/nl/search?q=vildagliptine'],
     ['Eucreas 50mg 850mg', 'overige', 'https://www.bcfi.be/nl/search?q=vildagliptine+metformine'],
     ['Trajenta 5mg linagliptine', 'overige', 'https://www.bcfi.be/nl/search?q=linagliptine'],
-    ['Linagliptine 5mg', 'overige', 'https://www.bcfi.be/nl/search?q=linagliptine'],
     ['Komboglyze 2.5mg 1000mg', 'overige', 'https://www.bcfi.be/nl/search?q=saxagliptine+metformine'],
     ['Onglyza 2.5mg saxagliptine', 'overige', 'https://www.bcfi.be/nl/search?q=saxagliptine'],
-    ['Saxagliptine 5mg', 'overige', 'https://www.bcfi.be/nl/search?q=saxagliptine'],
     ['Alogliptine 25mg', 'overige', 'https://www.bcfi.be/nl/search?q=alogliptine'],
     ['Nesina 25mg alogliptine', 'overige', 'https://www.bcfi.be/nl/search?q=alogliptine'],
     ['Nateglinide 60mg', 'overige', 'https://www.bcfi.be/nl/search?q=nateglinide'],
@@ -2369,7 +2248,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Nexium Control 20mg', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=esomeprazol'],
     ['Inexium 20mg esomeprazol', 'spijsvertering', 'https://www.bcfi.be/nl/search?q=esomeprazol'],
     ['Livostin oogdruppels levocabastine', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=levocabastine'],
-    ['Livostin neusspray', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=levocabastine'],
     ['Levocabastine 0.5mg oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=levocabastine'],
     ['Opatanol 1mg oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=olopatadine'],
     ['Patanol oogdruppels olopatadine', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=olopatadine'],
@@ -2381,11 +2259,9 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Optilast oogdruppels azelastine', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=azelastine'],
     ['Alomide oogdruppels lodoxamide', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=lodoxamide'],
     ['Crolom oogdruppels cromoglicinaat', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=cromoglicinezuur'],
-    ['Vividrin oogdruppels', 'ogen/oren', 'https://www.bcfi.be/nl/search?q=cromoglicinezuur'],
     ['Azelastine neusspray 0.1mg', 'allergie', 'https://www.bcfi.be/nl/search?q=azelastine'],
     ['Rhinolast neusspray azelastine', 'allergie', 'https://www.bcfi.be/nl/search?q=azelastine'],
     ['Dymista neusspray combo', 'allergie', 'https://www.bcfi.be/nl/search?q=azelastine+fluticason'],
-    ['Flixonase 50mcg neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=fluticason'],
     ['Flixonase Nasule druppels', 'allergie', 'https://www.bcfi.be/nl/search?q=fluticason'],
     ['Avamys 27.5mcg neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=fluticason+furoaat'],
     ['Veramyst neusspray', 'allergie', 'https://www.bcfi.be/nl/search?q=fluticason+furoaat'],
@@ -2429,10 +2305,8 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Horizant 600mg', 'overige', 'https://www.bcfi.be/nl/search?q=gabapentine'],
     ['Neurontin 100mg gabapentine', 'overige', 'https://www.bcfi.be/nl/search?q=gabapentine'],
     ['Lyrica 50mg pregabaline', 'overige', 'https://www.bcfi.be/nl/search?q=pregabaline'],
-    ['Lyrica 150mg pregabaline', 'overige', 'https://www.bcfi.be/nl/search?q=pregabaline'],
     ['Lyrica 300mg pregabaline', 'overige', 'https://www.bcfi.be/nl/search?q=pregabaline'],
     ['Pregabaline 25mg', 'overige', 'https://www.bcfi.be/nl/search?q=pregabaline'],
-    ['Pregabaline 150mg', 'overige', 'https://www.bcfi.be/nl/search?q=pregabaline'],
     ['Tegretol CR 200mg', 'overige', 'https://www.bcfi.be/nl/search?q=carbamazepine'],
     ['Tegretol CR 400mg', 'overige', 'https://www.bcfi.be/nl/search?q=carbamazepine'],
     ['Carbagen 200mg', 'overige', 'https://www.bcfi.be/nl/search?q=carbamazepine'],
@@ -2541,7 +2415,6 @@ try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON gene
     ['Hylotears oogdruppels', 'ogen/oren', null],
     ['Cationorm oogdruppels emulsie', 'ogen/oren', null],
     ['Thealoz oogdruppels trehalose', 'ogen/oren', null],
-    ['Thealoz Duo oogdruppels', 'ogen/oren', null],
     ['Oxyal oogdruppels', 'ogen/oren', null],
     ['Hyabak oogdruppels', 'ogen/oren', null],
     ['Bluyal oogdruppels', 'ogen/oren', null],
