@@ -262,14 +262,12 @@
   /* ── AUTOCOMPLETE ── */
   .autocomplete-wrap { position: relative; }
   .autocomplete-list {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0; right: 0;
+    position: fixed;
     background: var(--warm-white);
     border: 1px solid var(--teal);
     border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    z-index: 1000;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    z-index: 9999;
     max-height: 260px;
     overflow-y: auto;
   }
@@ -997,6 +995,12 @@ function showAc(results) {
       <span class="autocomplete-item-cat"><span class="badge badge-cat">${catEmoji[r.categorie]||'📦'} ${esc(r.categorie)}</span></span>
     </div>
   `).join('');
+  // Positie berekenen t.o.v. viewport (fixed positioning)
+  const input = document.getElementById('fNaam');
+  const rect = input.getBoundingClientRect();
+  list.style.top = (rect.bottom + 4) + 'px';
+  list.style.left = rect.left + 'px';
+  list.style.width = rect.width + 'px';
   list.style.display = 'block';
 }
 
