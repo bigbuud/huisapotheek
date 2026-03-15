@@ -2547,6 +2547,20 @@ app.get('/api/zoek-geneesmiddel', requireAuth, (req, res) => {
   res.json(combined);
 });
 
+
+// ── DEBUG: test endpoint ──────────────────────────────────────────
+app.get('/api/debug-zoek', requireAuth, (req, res) => {
+  const q = (req.query.q || '').trim();
+  const ql = q.toLowerCase();
+  const alle = GENEESMIDDELEN.filter(([naam]) => naam.toLowerCase().includes(ql));
+  res.json({
+    query: q,
+    totaal_in_bibliotheek: GENEESMIDDELEN.length,
+    matches: alle.length,
+    eerste_10: alle.slice(0,10).map(([naam,cat]) => ({naam,cat}))
+  });
+});
+
 // ── Locaties endpoint (alle unieke locaties uit database) ─────────
 app.get('/api/locaties', requireAuth, (req, res) => {
   const rows = db.prepare(`
