@@ -72,11 +72,11 @@ db.exec(`
 try { db.exec(`ALTER TABLE medicijnen ADD COLUMN bijsluiter_url TEXT`); } catch(e) {}
 
 // ── Geneesmiddelen databank ────────────────────────────────────────
-// Voeg UNIQUE constraint toe als die nog niet bestaat
+// Bibliotheek volledig verversen bij elke opstart (gebruikersdata in 'medicijnen' blijft intact)
+db.exec('DELETE FROM geneesmiddelen_db');
 try { db.exec('CREATE UNIQUE INDEX IF NOT EXISTS idx_geneesmiddelen_naam ON geneesmiddelen_db(naam)'); } catch(e) {}
-// INSERT OR REPLACE: altijd updaten zodat nieuwe items ook na herstart worden toegevoegd
 {
-  const ins = db.prepare('INSERT OR REPLACE INTO geneesmiddelen_db (naam, categorie, bijsluiter_url) VALUES (?, ?, ?)');
+  const ins = db.prepare('INSERT OR IGNORE INTO geneesmiddelen_db (naam, categorie, bijsluiter_url) VALUES (?, ?, ?)');
   const medicines = [
     // Pijnstillers
     ['Paracetamol', 'pijnstiller', 'https://www.bcfi.be/nl/search?q=paracetamol'],
