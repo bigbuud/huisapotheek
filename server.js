@@ -7,7 +7,7 @@ const crypto = require('crypto');
 const session = require('express-session');
 
 const app = express();
-const APP_VERSION = '2.0.0-20260315';
+const APP_VERSION = '2.0.0-20260315-' + Date.now();
 
 app.use(cors());
 app.use(express.json());
