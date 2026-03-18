@@ -712,7 +712,7 @@
 <div id="login-page">
   <div class="login-card">
     <div class="login-logo">
-      <div class="login-logo-icon">💊</div>
+      <div class="login-logo-icon"><img src="/icons/icon-192.png" style="width:32px;height:32px;border-radius:8px"></div>
       <div class="login-logo-text">
         <h1>MedicijnKast</h1>
         <p>THUISAPOTHEEK BEHEER</p>
@@ -749,7 +749,7 @@
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <div class="sidebar-logo-icon">💊</div>
+      <div class="sidebar-logo-icon"><img src="/icons/icon-192.png" style="width:22px;height:22px;border-radius:6px"></div>
       <div class="sidebar-logo-text">
         <h2>MedicijnKast</h2>
         <span>THUISAPOTHEEK</span>
@@ -814,7 +814,6 @@
       <div class="stats-grid" id="stats-grid">
         <div class="stat-card total skeleton" style="height:120px"></div>
         <div class="stat-card expired skeleton" style="height:120px"></div>
-        <div class="stat-card expiring skeleton" style="height:120px"></div>
         <div class="stat-card safe skeleton" style="height:120px"></div>
       </div>
 
@@ -949,9 +948,10 @@
       </div>
 
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group autocomplete-wrap" id="generic-wrap">
           <label>Generieke naam</label>
-          <input type="text" id="med-generic" placeholder="Werkzame stof">
+          <input type="text" id="med-generic" placeholder="Werkzame stof" autocomplete="off">
+          <div class="autocomplete-dropdown" id="ac-generic-dropdown"></div>
         </div>
         <div class="form-group">
           <label>Vorm</label>
@@ -1126,15 +1126,24 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('inv-sort').addEventListener('change', renderInventory);
   document.getElementById('inv-rx').addEventListener('change', filterInventory);
 
-  // Autocomplete
+  // Autocomplete naam
   const nameInput = document.getElementById('med-name');
   nameInput.addEventListener('input', () => {
     clearTimeout(acTimeout);
     acTimeout = setTimeout(() => fetchAutocomplete(nameInput.value), 200);
   });
   nameInput.addEventListener('keydown', handleAcKeydown);
+
+  // Autocomplete generieke naam
+  const genericInput = document.getElementById('med-generic');
+  let acGenericTimeout = null;
+  genericInput.addEventListener('input', () => {
+    clearTimeout(acGenericTimeout);
+    acGenericTimeout = setTimeout(() => fetchGenericAutocomplete(genericInput.value), 200);
+  });
+
   document.addEventListener('click', e => {
-    if (!e.target.closest('.autocomplete-wrap')) hideAutocomplete();
+    if (!e.target.closest('.autocomplete-wrap')) { hideAutocomplete(); hideGenericAutocomplete(); }
   });
 
 
@@ -1251,17 +1260,11 @@ function renderStats(stats) {
       <div class="stat-label">Verlopen</div>
       <div class="stat-sublabel">onmiddellijk verwijderen</div>
     </div>
-    <div class="stat-card expiring">
-      <div class="stat-icon">⚠️</div>
-      <div class="stat-number">${stats.expiring30}</div>
-      <div class="stat-label">< 30 dagen</div>
-      <div class="stat-sublabel">binnenkort vervallen</div>
-    </div>
     <div class="stat-card safe">
       <div class="stat-icon">✅</div>
-      <div class="stat-number">${stats.total - stats.expired - stats.expiring30}</div>
-      <div class="stat-label">In orde</div>
-      <div class="stat-sublabel">meer dan 30 dagen geldig</div>
+      <div class="stat-number">${stats.total - stats.expired}</div>
+      <div class="stat-label">Geldig</div>
+      <div class="stat-sublabel">niet verlopen</div>
     </div>
     <div class="stat-card rx">
       <div class="stat-icon">🩺</div>
@@ -1820,6 +1823,52 @@ function updateAcSelection(items) {
 function hideAutocomplete() {
   document.getElementById('ac-dropdown').classList.remove('show');
   acSelectedIndex = -1;
+}
+
+// ==================== GENERIEKE NAAM AUTOCOMPLETE ====================
+async function fetchGenericAutocomplete(q) {
+  if (q.length < 2) { hideGenericAutocomplete(); return; }
+  try {
+    const res = await fetch(`/api/medicines/search?q=${encodeURIComponent(q)}`);
+    const data = await res.json();
+    // Filter unieke generieke namen die de query bevatten
+    const seen = new Set();
+    const generics = data
+      .filter(item => item.generic && item.generic.toLowerCase().includes(q.toLowerCase()))
+      .filter(item => { if (seen.has(item.generic)) return false; seen.add(item.generic); return true; })
+      .slice(0, 8);
+    showGenericAutocomplete(generics);
+  } catch (err) {}
+}
+
+function showGenericAutocomplete(items) {
+  const dd = document.getElementById('ac-generic-dropdown');
+  if (items.length === 0) { hideGenericAutocomplete(); return; }
+  const input = document.getElementById('med-generic');
+  const rect = input.getBoundingClientRect();
+  dd.style.top = (rect.bottom + 4) + 'px';
+  dd.style.left = rect.left + 'px';
+  dd.style.width = rect.width + 'px';
+  dd.innerHTML = items.map(item => `
+    <div class="ac-item" onclick="selectGenericItem('${item.generic.replace(/'/g,"\'")}')">
+      <div class="ac-name">${item.generic}</div>
+      <div class="ac-sub">
+        <span class="ac-cat">${item.category}</span>
+        ${item.rx ? '<span style="color:#8b5cf6">· Rx</span>' : '· vrij verkrijgbaar'}
+      </div>
+    </div>`).join('');
+  dd.classList.add('show');
+}
+
+function selectGenericItem(generic) {
+  document.getElementById('med-generic').value = generic;
+  hideGenericAutocomplete();
+  document.getElementById('med-category').focus();
+}
+
+function hideGenericAutocomplete() {
+  const dd = document.getElementById('ac-generic-dropdown');
+  if (dd) dd.classList.remove('show');
 }
 
 // ==================== ADD PAGE ====================
