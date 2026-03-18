@@ -74,9 +74,10 @@ function initDb() {
     );
   `);
 
-  // Populate medicine_db if empty
+  // Sync medicine_db with medicines.js — altijd bijwerken zodat nieuwe medicijnen worden opgepikt
   const count = db.prepare('SELECT COUNT(*) as c FROM medicine_db').get();
-  if (count.c === 0) {
+  if (count.c !== MEDICINES.length) {
+    db.prepare('DELETE FROM medicine_db').run();
     const insert = db.prepare(
       'INSERT INTO medicine_db (name, generic, category, form, rx) VALUES (@name, @generic, @category, @form, @rx)'
     );
@@ -92,7 +93,7 @@ function initDb() {
       }
     });
     insertMany(MEDICINES);
-    console.log(`✅ Medicine database loaded: ${MEDICINES.length} medicines`);
+    console.log(`✅ Medicine database gesynchroniseerd: ${MEDICINES.length} medicijnen`);
   }
 }
 
