@@ -948,10 +948,20 @@
       </div>
 
       <div class="form-row">
-        <div class="form-group autocomplete-wrap" id="generic-wrap">
-          <label>Generieke naam</label>
-          <input type="text" id="med-generic" placeholder="Werkzame stof" autocomplete="off">
-          <div class="autocomplete-dropdown" id="ac-generic-dropdown"></div>
+        <div class="form-group">
+          <label>Generieke naam
+            <span style="font-size:11px; color:var(--text3); font-weight:400; margin-left:6px">— typ om merken te zoeken</span>
+          </label>
+          <div style="display:flex; gap:6px; align-items:flex-start">
+            <div style="flex:1; position:relative">
+              <input type="text" id="med-generic" placeholder="bv. Paracetamol, Ibuprofen..." autocomplete="off"
+                style="width:100%; padding:10px 12px; background:var(--bg); border:1.5px solid var(--border2); border-radius:var(--radius-sm); color:var(--text); font-size:14px; font-family:var(--font-body); outline:none;">
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="searchByGeneric()" title="Zoek merken op werkzame stof"
+              style="white-space:nowrap; height:40px; flex-shrink:0">🔍 Merken</button>
+          </div>
+          <div id="generic-results" style="display:none; margin-top:8px; border:1.5px solid var(--border2); border-radius:var(--radius-sm); background:#fff; max-height:220px; overflow-y:auto; box-shadow:var(--shadow-lg);">
+          </div>
         </div>
         <div class="form-group">
           <label>Vorm</label>
@@ -1134,16 +1144,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   nameInput.addEventListener('keydown', handleAcKeydown);
 
-  // Autocomplete generieke naam
-  const genericInput = document.getElementById('med-generic');
-  let acGenericTimeout = null;
-  genericInput.addEventListener('input', () => {
-    clearTimeout(acGenericTimeout);
-    acGenericTimeout = setTimeout(() => fetchGenericAutocomplete(genericInput.value), 200);
-  });
-
   document.addEventListener('click', e => {
-    if (!e.target.closest('.autocomplete-wrap')) { hideAutocomplete(); hideGenericAutocomplete(); }
+    if (!e.target.closest('.autocomplete-wrap')) hideAutocomplete();
+    // Sluit generieke resultaten als buiten geklikt
+    if (!e.target.closest('#generic-results') && !e.target.closest('#med-generic') && !e.target.closest('button[onclick="searchByGeneric()"]')) {
+      const p = document.getElementById('generic-results');
+      if (p) p.style.display = 'none';
+    }
   });
 
 
@@ -1650,6 +1657,7 @@ function closeModal() {
 function clearForm() {
   document.getElementById('med-name').value = '';
   document.getElementById('med-generic').value = '';
+  const gp = document.getElementById('generic-results'); if(gp) gp.style.display='none';
   document.getElementById('med-category').value = '';
   document.getElementById('med-form').value = '';
   document.getElementById('med-qty').value = '1';
@@ -1825,50 +1833,58 @@ function hideAutocomplete() {
   acSelectedIndex = -1;
 }
 
-// ==================== GENERIEKE NAAM AUTOCOMPLETE ====================
-async function fetchGenericAutocomplete(q) {
-  if (q.length < 2) { hideGenericAutocomplete(); return; }
+// ==================== GENERIEKE NAAM — ZOEK MERKEN ====================
+async function searchByGeneric() {
+  const q = document.getElementById('med-generic').value.trim();
+  if (q.length < 2) { toast('Typ eerst een werkzame stof', 'warn'); return; }
+
+  const panel = document.getElementById('generic-results');
+  panel.style.display = 'block';
+  panel.innerHTML = '<div style="padding:12px; font-size:13px; color:var(--text3)">Zoeken...</div>';
+
   try {
     const res = await fetch(`/api/medicines/search?q=${encodeURIComponent(q)}`);
     const data = await res.json();
-    // Filter unieke generieke namen die de query bevatten
-    const seen = new Set();
-    const generics = data
-      .filter(item => item.generic && item.generic.toLowerCase().includes(q.toLowerCase()))
-      .filter(item => { if (seen.has(item.generic)) return false; seen.add(item.generic); return true; })
-      .slice(0, 8);
-    showGenericAutocomplete(generics);
-  } catch (err) {}
-}
 
-function showGenericAutocomplete(items) {
-  const dd = document.getElementById('ac-generic-dropdown');
-  if (items.length === 0) { hideGenericAutocomplete(); return; }
-  const input = document.getElementById('med-generic');
-  const rect = input.getBoundingClientRect();
-  dd.style.top = (rect.bottom + 4) + 'px';
-  dd.style.left = rect.left + 'px';
-  dd.style.width = rect.width + 'px';
-  dd.innerHTML = items.map(item => `
-    <div class="ac-item" onclick="selectGenericItem('${item.generic.replace(/'/g,"\'")}')">
-      <div class="ac-name">${item.generic}</div>
-      <div class="ac-sub">
-        <span class="ac-cat">${item.category}</span>
-        ${item.rx ? '<span style="color:#8b5cf6">· Rx</span>' : '· vrij verkrijgbaar'}
+    // Toon alle merken waar de generieke naam in voorkomt
+    const matches = data.filter(item =>
+      item.generic && item.generic.toLowerCase().includes(q.toLowerCase())
+    );
+
+    if (matches.length === 0) {
+      panel.innerHTML = '<div style="padding:12px; font-size:13px; color:var(--text3)">Geen merken gevonden voor deze werkzame stof.</div>';
+      return;
+    }
+
+    panel.innerHTML = `
+      <div style="padding:8px 12px; font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--border); background:var(--surface)">
+        ${matches.length} merken gevonden voor "${q}" — klik om te selecteren
       </div>
-    </div>`).join('');
-  dd.classList.add('show');
+      ${matches.map(item => `
+        <div onclick="pickGenericBrand('${item.name.replace(/'/g,"\'")}','${(item.generic||'').replace(/'/g,"\'")}','${item.category.replace(/'/g,"\'")}','${(item.form||'').replace(/'/g,"\'")}',${item.rx?1:0})"
+          style="padding:10px 12px; cursor:pointer; border-bottom:1px solid var(--border); transition:background 0.1s;"
+          onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background=''">
+          <div style="font-size:13px; font-weight:600; color:var(--text)">${item.name}</div>
+          <div style="font-size:11px; color:var(--text3); margin-top:2px; display:flex; gap:8px; flex-wrap:wrap">
+            <span style="color:var(--accent)">${item.category}</span>
+            ${item.form ? `<span>· ${item.form}</span>` : ''}
+            ${item.rx ? '<span style="color:#8b5cf6; font-weight:600">· Rx</span>' : '<span style="color:var(--green)">· vrij</span>'}
+          </div>
+        </div>`).join('')}`;
+  } catch (err) {
+    panel.innerHTML = '<div style="padding:12px; font-size:13px; color:var(--red)">Fout bij zoeken.</div>';
+  }
 }
 
-function selectGenericItem(generic) {
+function pickGenericBrand(name, generic, category, form, rx) {
+  document.getElementById('med-name').value = name;
   document.getElementById('med-generic').value = generic;
-  hideGenericAutocomplete();
-  document.getElementById('med-category').focus();
-}
-
-function hideGenericAutocomplete() {
-  const dd = document.getElementById('ac-generic-dropdown');
-  if (dd) dd.classList.remove('show');
+  document.getElementById('med-category').value = category;
+  document.getElementById('med-form').value = form;
+  document.getElementById('med-rx').checked = !!rx;
+  document.getElementById('generic-results').style.display = 'none';
+  document.getElementById('med-qty').focus();
+  toast('Medicijn geselecteerd', 'success');
 }
 
 // ==================== ADD PAGE ====================
