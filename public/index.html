@@ -609,10 +609,10 @@
     /* AUTOCOMPLETE */
     .autocomplete-wrap { position: relative; }
     .autocomplete-dropdown {
-      position: absolute; top: 100%; left: 0; right: 0;
+      position: fixed;
       background: #fff; border: 1px solid var(--border2);
       border-radius: var(--radius-sm); margin-top: 4px;
-      max-height: 260px; overflow-y: auto; z-index: 200;
+      max-height: 260px; overflow-y: auto; z-index: 2000;
       box-shadow: var(--shadow-lg); display: none;
     }
     .autocomplete-dropdown.show { display: block; }
@@ -883,15 +883,10 @@
     <div class="page" id="page-expiring">
       <div class="page-header">
         <h2>Vervaldatums</h2>
-        <p>Verlopen en binnenkort vervallende medicijnen</p>
+        <p>Medicijnen die hun vervaldatum hebben overschreden</p>
       </div>
 
-      <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap">
-        <button class="btn btn-ghost btn-sm exp-filter active" data-days="0">Verlopen</button>
-        <button class="btn btn-ghost btn-sm exp-filter" data-days="30">30 dagen</button>
-        <button class="btn btn-ghost btn-sm exp-filter" data-days="90">90 dagen</button>
-        <button class="btn btn-ghost btn-sm exp-filter" data-days="365">1 jaar</button>
-      </div>
+
 
       <div class="table-wrap">
         <table>
@@ -1142,15 +1137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!e.target.closest('.autocomplete-wrap')) hideAutocomplete();
   });
 
-  // Expiry filters
-  document.querySelectorAll('.exp-filter').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.exp-filter').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      expDays = parseInt(btn.dataset.days);
-      loadExpiryPage();
-    });
-  });
+
 });
 
 // ==================== AUTH ====================
@@ -1471,16 +1458,7 @@ function renderInventory() {
 // ==================== EXPIRY PAGE ====================
 async function loadExpiryPage() {
   const today = new Date().toISOString().split('T')[0];
-  let data;
-
-  if (expDays === 0) {
-    // Only expired
-    data = inventoryData.filter(i => i.expiry_date && i.expiry_date < today);
-  } else {
-    const future = new Date(Date.now() + expDays * 86400000).toISOString().split('T')[0];
-    data = inventoryData.filter(i => i.expiry_date && i.expiry_date <= future);
-  }
-
+  let data = inventoryData.filter(i => i.expiry_date && i.expiry_date < today);
   data.sort((a, b) => a.expiry_date.localeCompare(b.expiry_date));
 
   const tbody = document.getElementById('expiry-tbody');
@@ -1488,7 +1466,7 @@ async function loadExpiryPage() {
     tbody.innerHTML = `<tr><td colspan="6">
       <div class="empty-state">
         <div class="empty-icon">✅</div>
-        <div class="empty-title">Geen ${expDays === 0 ? 'verlopen' : 'binnenkort vervallende'} medicijnen</div>
+        <div class="empty-title">Geen verlopen medicijnen</div>
       </div>
     </td></tr>`;
     return;
@@ -1777,6 +1755,12 @@ function showAutocomplete(items) {
   const dd = document.getElementById('ac-dropdown');
   acSelectedIndex = -1;
   if (items.length === 0) { hideAutocomplete(); return; }
+  // Position using fixed coords based on input field
+  const input = document.getElementById('med-name');
+  const rect = input.getBoundingClientRect();
+  dd.style.top = (rect.bottom + 4) + 'px';
+  dd.style.left = rect.left + 'px';
+  dd.style.width = rect.width + 'px';
   dd.innerHTML = items.map((item, i) => `
     <div class="ac-item" data-index="${i}" onclick="selectAcItem(${i})">
       <div class="ac-name">${item.name}</div>
