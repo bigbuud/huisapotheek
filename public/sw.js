@@ -1,4 +1,4 @@
-const CACHE_NAME = 'medicijnkast-v1';
+const CACHE_NAME = 'huisapotheek-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -38,7 +38,19 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Cache-first for static assets
+  // Network-first for icons (zo worden nieuwe iconen altijd opgepikt)
+  if (url.pathname.startsWith('/icons/')) {
+    event.respondWith(
+      fetch(event.request).then(res => {
+        const clone = res.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        return res;
+      }).catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Cache-first for rest
   event.respondWith(
     caches.match(event.request).then(cached => cached || fetch(event.request))
   );
