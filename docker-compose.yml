@@ -1,10 +1,7 @@
 version: '3.8'
 
 services:
-  medicijnkast:
-    build:
-      context: ./app
-      dockerfile: Dockerfile
+  huisapotheek:
     image: ghcr.io/bigbuud/huisapotheek:latest
     container_name: huisapotheek
     restart: unless-stopped
@@ -13,12 +10,9 @@ services:
     volumes:
       - /volume1/docker/huisapotheek:/data
     environment:
-      # ─── Login ───────────────────────────────────────
       APP_USERNAME: admin
       APP_PASSWORD: medicijn123
-      # ─── Sessie ──────────────────────────────────────
       SESSION_SECRET: verander-dit-naar-een-lang-geheim
-      # ─── Database ────────────────────────────────────
       DB_PATH: /data/medicijnkast.db
       PORT: 3000
       NODE_ENV: production
